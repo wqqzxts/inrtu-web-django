@@ -1,0 +1,9 @@
+.conda/
+.vscode/
+.pytest_cache/
+
+app/__pycache__/
+characters/__pycache__/
+characters/migrations/__pycache__/
+
+node_modules
