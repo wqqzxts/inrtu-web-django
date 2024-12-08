@@ -93,11 +93,6 @@ onBeforeMount(async () => {
             <h1 class="modal-title fs-5" id="exampleModalLabel">
               Редактировать роль
             </h1>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
           </div>
           <div class="modal-body">
             <div class="row">
