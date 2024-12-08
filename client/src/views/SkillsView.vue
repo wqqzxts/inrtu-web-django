@@ -26,10 +26,6 @@ async function onRemoveClick(skill) {
   fetchSkills();
 }
 
-async function onSkillDescriptionClick(skill) {
-  skillToEdit.value = { ...skill };
-}
-
 async function onSkillEditClick(skill) {
   skillToEdit.value = { ...skill };
 }
@@ -72,7 +68,7 @@ onBeforeMount(async () => {
       </form>
 
       <div>
-        <div v-for="item in skills" :key="item.name" class="skill-item">
+        <div v-for="item in skills" class="skill-item" v-bind:key="item">
           <div>{{ item.name }}</div>
           <button
             class="btn btn-outline-info"
@@ -113,15 +109,30 @@ onBeforeMount(async () => {
             ></button>
           </div>
           <div class="modal-body">
-            <div class="row">
-              <div class="col">
-                <div class="form-floating">
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="skillToEdit.name"
-                  />
-                  <label for="floatingInput">Название способности</label>
+            <div class="col">
+              <div class="row">
+                <div class="col m-1">
+                  <div class="form-floating">
+                    <input
+                      type="text"
+                      class="form-control"
+                      v-model="skillToEdit.name"
+                    />
+                    <label for="floatingInput">Название способности</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col m-1">
+                  <div class="form-floating">
+                    <textarea
+                      class="form-control"
+                      placeholder="Leave a comment here"
+                      id="floatingTextarea"
+                      v-model="skillToEdit.description"
+                    ></textarea>
+                    <label for="floatingTextarea">Описание способности</label>
+                  </div>
                 </div>
               </div>
             </div>
@@ -154,13 +165,20 @@ onBeforeMount(async () => {
             <h1 class="modal-title fs-5" id="exampleModalLabel">
               Описание способности
             </h1>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
           </div>
-          <div class="modal-body"></div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="form-floating">
+                <textarea
+                  class="form-control"
+                  placeholder="Leave a comment here"
+                  id="floatingTextarea"
+                  v-model="skillToEdit.description"
+                  readonly
+                ></textarea>
+              </div>
+            </div>
+          </div>
           <div class="modal-footer">
             <button
               type="button"

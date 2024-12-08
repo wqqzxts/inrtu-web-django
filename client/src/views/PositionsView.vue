@@ -68,11 +68,11 @@ onBeforeMount(async () => {
       </form>
 
       <div>
-        <div v-for="item in positions" class="position-item">
+        <div v-for="item in positions" class="position-item" v-bind:key="item">
           <div>{{ item.id }}</div>
           <div>{{ item.name }}</div>
           <button
-            class="btn btn-outline-info"
+            class="btn btn-outline-primary"
             @click="onPositionEditClick(item)"
             data-bs-toggle="modal"
             data-bs-target="#editPositionModal"

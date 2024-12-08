@@ -99,7 +99,7 @@ onBeforeMount(async () => {
                 v-model="characterToAdd.team"
                 required
               >
-                <option :value="t.id" v-for="t in teams">{{ t.name }}</option>
+                <option :value="t.id" v-for="t in teams" v-bind:key="t.id">{{ t.name }}</option>
               </select>
               <label for="floatingInput">Команда</label>
             </div>
@@ -112,7 +112,7 @@ onBeforeMount(async () => {
                 v-model="characterToAdd.position"
                 required
               >
-                <option :value="p.id" v-for="p in positions">
+                <option :value="p.id" v-for="p in positions" v-bind:key="p.id">
                   {{ p.name }}
                 </option>
               </select>
@@ -127,7 +127,7 @@ onBeforeMount(async () => {
                 v-model="characterToAdd.skill"
                 required
               >
-                <option :value="s.id" v-for="s in skills">{{ s.name }}</option>
+                <option :value="s.id" v-for="s in skills" v-bind:key="s.id">{{ s.name }}</option>
               </select>
               <label for="floatingInput">Способность</label>
             </div>
@@ -142,13 +142,13 @@ onBeforeMount(async () => {
       </form>
 
       <div>
-        <div v-for="item in characters" class="character-item">
+        <div v-for="item in characters" class="character-item" v-bind:key="item">
           <div>{{ item.name }}</div>
           <div>{{ teamByID[item.team]?.name }}</div>
           <div>{{ positionByID[item.position]?.name }}</div>
           <div>{{ skillByID[item.skill]?.name }}</div>
           <button
-            class="btn btn-outline-info"
+            class="btn btn-outline-primary"
             @click="onCharacterEditClick(item)"
             data-bs-toggle="modal"
             data-bs-target="#editCharacterModal"
@@ -168,11 +168,6 @@ onBeforeMount(async () => {
               <h1 class="modal-title fs-5" id="exampleModalLabel">
                 Редактировать персонажа
               </h1>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-              ></button>
             </div>
             <div class="modal-body">
               <div class="row">
@@ -190,7 +185,7 @@ onBeforeMount(async () => {
                 <div class="col-2">
                   <div class="form-floating">
                     <select class="form-select" v-model="characterToEdit.team">
-                      <option :value="t.id" v-for="t in teams">
+                      <option :value="t.id" v-for="t in teams" v-bind:key="t.id">
                         {{ t.name }}
                       </option>
                     </select>
@@ -204,7 +199,7 @@ onBeforeMount(async () => {
                       class="form-select"
                       v-model="characterToEdit.position"
                     >
-                      <option :value="p.id" v-for="p in positions">
+                      <option :value="p.id" v-for="p in positions" v-bind:key="p.id">
                         {{ p.name }}
                       </option>
                     </select>
@@ -215,7 +210,7 @@ onBeforeMount(async () => {
                 <div class="col-4">
                   <div class="form-floating">
                     <select class="form-select" v-model="characterToEdit.skill">
-                      <option :value="s.id" v-for="s in skills">
+                      <option :value="s.id" v-for="s in skills" v-bind:key="s.id">
                         {{ s.name }}
                       </option>
                     </select>

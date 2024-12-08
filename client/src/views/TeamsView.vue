@@ -68,11 +68,11 @@ onBeforeMount(async () => {
       </form>
 
       <div>
-        <div v-for="item in teams" class="team-item">
+        <div v-for="item in teams" class="team-item" v-bind:key="item">
           <div>{{ item.id }}</div>
           <div>{{ item.name }}</div>
           <button
-            class="btn btn-outline-info"
+            class="btn btn-outline-primary"
             @click="onTeamEditClick(item)"
             data-bs-toggle="modal"
             data-bs-target="#editTeamModal"
