@@ -20,10 +20,10 @@
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
           <ul class="navbar-nav">
             <li class="nav-item">
-              <router-link class="nav-link" to="/" >Персонажи</router-link>
+              <router-link class="nav-link" to="/">Персонажи</router-link>
             </li>
             <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="#">Контент</a>
+              <router-link class="nav-link" to="/content">Контент</router-link>
             </li>
             <li class="nav-item dropdown">
               <a
@@ -36,19 +36,38 @@
                 Еще
               </a>
               <ul class="dropdown-menu">
-                <li><router-link class="dropdown-item" to="/teams" >Команды</router-link></li>
-                <li><router-link class="dropdown-item" to="/positions" >Роли</router-link></li>
-                <li><router-link class="dropdown-item" to="/skills" >Способности</router-link></li>
-                <li><router-link class="dropdown-item" to="/content_type" >Тип контента</router-link></li>
+                <li>
+                  <router-link class="dropdown-item" to="/teams"
+                    >Команды</router-link
+                  >
+                </li>
+                <li>
+                  <router-link class="dropdown-item" to="/positions"
+                    >Роли</router-link
+                  >
+                </li>
+                <li>
+                  <router-link class="dropdown-item" to="/skills"
+                    >Способности</router-link
+                  >
+                </li>
+                <li>
+                  <router-link class="dropdown-item" to="/content_type"
+                    >Тип контента</router-link
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="/admin" target="_blank"
+                    >Админка</a
+                  >
+                </li>
               </ul>
             </li>
           </ul>
         </div>
       </div>
     </nav>
-  </div>
-  <div class="container">
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
