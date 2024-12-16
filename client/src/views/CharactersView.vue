@@ -25,28 +25,41 @@ const skillByID = computed(() => {
   return _.keyBy(skills.value, (x) => x.id);
 });
 
+const showZoomImageContainer = ref(false);
+const zoomImageUrl = ref("");
+
+function showZoomImage(imageUrl) {
+  zoomImageUrl.value = imageUrl;
+  showZoomImageContainer.value = true;
+}
+
+function hideZoomImage() {
+  showZoomImageContainer.value = false;
+}
 ///////////////////////////////////////////////////////////////////////
 async function onCharacterAdd() {
   const formData = new FormData();
 
-  formData.append('picture', charactersPictureRef.value.files[0]);
+  formData.append("picture", charactersPictureRef.value.files[0]);
 
-  formData.set('name', characterToAdd.value.name)
-  formData.set('team', characterToAdd.value.team)
-  formData.set('position', characterToAdd.value.position)
-  formData.set('skill', characterToAdd.value.skill)
+  formData.set("name", characterToAdd.value.name);
+  formData.set("team", characterToAdd.value.team);
+  formData.set("position", characterToAdd.value.position);
+  formData.set("skill", characterToAdd.value.skill);
 
   await axios.post("/api/characters/", formData, {
     headers: {
-      'Content-Type': 'multipart/form-data'
-    }
+      "Content-Type": "multipart/form-data",
+    },
   });
 
   await fetchCharacters();
 }
 
-async function chractersAddPictureChange() {
-  characterAddImageURL.value = URL.createObjectURL(charactersPictureRef.value.files[0])
+async function charactersAddPictureChange() {
+  characterAddImageURL.value = URL.createObjectURL(
+    charactersPictureRef.value.files[0]
+  );
 }
 
 async function onRemoveClick(character) {
@@ -111,11 +124,21 @@ onBeforeMount(async () => {
           </div>
 
           <div class="col-auto">
-            <input class="form-control" type="file" ref="charactersPictureRef" @change="chractersAddPictureChange">
+            <input
+              class="form-control"
+              type="file"
+              ref="charactersPictureRef"
+              @change="charactersAddPictureChange"
+              required
+            />
           </div>
 
           <div class="col-auto">
-            <img :src="characterAddImageURL" style="max-height: 60px;" alt="">
+            <img
+              :src="characterAddImageURL"
+              style="max-height: 60px"
+              required
+            />
           </div>
 
           <div class="col-auto">
@@ -125,7 +148,9 @@ onBeforeMount(async () => {
                 v-model="characterToAdd.team"
                 required
               >
-                <option :value="t.id" v-for="t in teams" v-bind:key="t.id">{{ t.name }}</option>
+                <option :value="t.id" v-for="t in teams" v-bind:key="t.id">
+                  {{ t.name }}
+                </option>
               </select>
               <label for="floatingInput">Команда</label>
             </div>
@@ -153,7 +178,9 @@ onBeforeMount(async () => {
                 v-model="characterToAdd.skill"
                 required
               >
-                <option :value="s.id" v-for="s in skills" v-bind:key="s.id">{{ s.name }}</option>
+                <option :value="s.id" v-for="s in skills" v-bind:key="s.id">
+                  {{ s.name }}
+                </option>
               </select>
               <label for="floatingInput">Способность</label>
             </div>
@@ -168,12 +195,23 @@ onBeforeMount(async () => {
       </form>
 
       <div>
-        <div v-for="item in characters" class="character-item" v-bind:key="item">
+        <div
+          v-for="item in characters"
+          class="character-item"
+          v-bind:key="item"
+        >
           <div>{{ item.name }}</div>
           <div>{{ teamByID[item.team]?.name }}</div>
           <div>{{ positionByID[item.position]?.name }}</div>
           <div>{{ skillByID[item.skill]?.name }}</div>
-          <div v-show="item.picture"><img :src="item.picture" style="max-height: 60px;"></div>
+          <!-- <div v-show="item.picture">
+            <img :src="item.picture" style="max-height: 60px" />
+          </div> -->
+          <img
+            :src="item.picture"
+            style="max-height: 60px; cursor: pointer"
+            @click="showZoomImage(item.picture)"
+          />
           <button
             class="btn btn-outline-primary"
             @click="onCharacterEditClick(item)"
@@ -212,7 +250,11 @@ onBeforeMount(async () => {
                 <div class="col-2">
                   <div class="form-floating">
                     <select class="form-select" v-model="characterToEdit.team">
-                      <option :value="t.id" v-for="t in teams" v-bind:key="t.id">
+                      <option
+                        :value="t.id"
+                        v-for="t in teams"
+                        v-bind:key="t.id"
+                      >
                         {{ t.name }}
                       </option>
                     </select>
@@ -226,7 +268,11 @@ onBeforeMount(async () => {
                       class="form-select"
                       v-model="characterToEdit.position"
                     >
-                      <option :value="p.id" v-for="p in positions" v-bind:key="p.id">
+                      <option
+                        :value="p.id"
+                        v-for="p in positions"
+                        v-bind:key="p.id"
+                      >
                         {{ p.name }}
                       </option>
                     </select>
@@ -237,7 +283,11 @@ onBeforeMount(async () => {
                 <div class="col-4">
                   <div class="form-floating">
                     <select class="form-select" v-model="characterToEdit.skill">
-                      <option :value="s.id" v-for="s in skills" v-bind:key="s.id">
+                      <option
+                        :value="s.id"
+                        v-for="s in skills"
+                        v-bind:key="s.id"
+                      >
                         {{ s.name }}
                       </option>
                     </select>
@@ -267,6 +317,14 @@ onBeforeMount(async () => {
         </div>
       </div>
     </div>
+
+    <div
+      class="zoom-image-container"
+      :class="{ active: showZoomImageContainer }"
+      @click="hideZoomImage"
+    >
+      <img :src="zoomImageUrl" alt="Увеличенное изображение" />
+    </div>
   </div>
 </template>
 
@@ -281,5 +339,41 @@ onBeforeMount(async () => {
   gap: 16px;
   align-items: center;
   align-content: center;
+}
+
+.custom-modal-width {
+    max-width: 1000px;
+    width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.zoom-image-container {
+    position: fixed;
+    left: 0;
+    top: 40px;
+    right: 0;
+    bottom: 0;
+    display: block;
+    padding: 1rem;
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    transform: scale(0.2, 0.2);
+    transition: all 0.2s ease-out;
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+.zoom-image-container.active {
+    opacity: 1;
+    transform: scale(1, 1);
+    height: auto;
+}
+
+.zoom-image-container img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
 }
 </style>

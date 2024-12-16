@@ -1,17 +1,15 @@
 <script setup>
-import { onBeforeMount } from 'vue';
-import axios from 'axios';
-import Cookies from 'js-cookie';
+import { onBeforeMount } from "vue";
+import axios from "axios";
+import Cookies from "js-cookie";
 import _ from "lodash";
 
 onBeforeMount(() => {
-  console.log(123)
-  axios.defaults.headers.common['X-CSRFToken'] = Cookies.get("csrftoken");
-})
+  axios.defaults.headers.common["X-CSRFToken"] = Cookies.get("csrftoken");
+});
 </script>
 
 <template>
-  
   <div class="container">
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
       <div class="container-fluid">

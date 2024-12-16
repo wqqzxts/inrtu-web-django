@@ -59,6 +59,7 @@ class Content(models.Model):
     episode = models.IntegerField("Номер эпизода")      #Серия\Глава
     volume = models.IntegerField("Номер раздела")       #Том\Сезон
     description = models.TextField("Описание эпизода")
+    picture = models.ImageField("Изображение", null=True, upload_to="characters")
 
     class Meta:
         verbose_name = "Контент"

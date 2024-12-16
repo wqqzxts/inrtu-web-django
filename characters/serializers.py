@@ -34,4 +34,4 @@ class CharacterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Character
-        fields = ['id', 'name', 'team', 'position', 'skill', 'picture']
+        fields = "__all__"
