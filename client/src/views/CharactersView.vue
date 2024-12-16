@@ -7,6 +7,8 @@ const characters = ref([]);
 const teams = ref([]);
 const positions = ref([]);
 const skills = ref([]);
+const charactersPictureRef = ref();
+const characterAddImageURL = ref();
 
 const characterToAdd = ref({});
 const characterToEdit = ref({});
@@ -25,10 +27,26 @@ const skillByID = computed(() => {
 
 ///////////////////////////////////////////////////////////////////////
 async function onCharacterAdd() {
-  await axios.post("/api/characters/", {
-    ...characterToAdd.value,
+  const formData = new FormData();
+
+  formData.append('picture', charactersPictureRef.value.files[0]);
+
+  formData.set('name', characterToAdd.value.name)
+  formData.set('team', characterToAdd.value.team)
+  formData.set('position', characterToAdd.value.position)
+  formData.set('skill', characterToAdd.value.skill)
+
+  await axios.post("/api/characters/", formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
   });
-  fetchCharacters();
+
+  await fetchCharacters();
+}
+
+async function chractersAddPictureChange() {
+  characterAddImageURL.value = URL.createObjectURL(charactersPictureRef.value.files[0])
 }
 
 async function onRemoveClick(character) {
@@ -93,6 +111,14 @@ onBeforeMount(async () => {
           </div>
 
           <div class="col-auto">
+            <input class="form-control" type="file" ref="charactersPictureRef" @change="chractersAddPictureChange">
+          </div>
+
+          <div class="col-auto">
+            <img :src="characterAddImageURL" style="max-height: 60px;" alt="">
+          </div>
+
+          <div class="col-auto">
             <div class="form-floating">
               <select
                 class="form-select"
@@ -147,6 +173,7 @@ onBeforeMount(async () => {
           <div>{{ teamByID[item.team]?.name }}</div>
           <div>{{ positionByID[item.position]?.name }}</div>
           <div>{{ skillByID[item.skill]?.name }}</div>
+          <div v-show="item.picture"><img :src="item.picture" style="max-height: 60px;"></div>
           <button
             class="btn btn-outline-primary"
             @click="onCharacterEditClick(item)"
@@ -250,7 +277,7 @@ onBeforeMount(async () => {
   border: 1px solid silver;
   border-radius: 6px;
   display: grid;
-  grid-template-columns: 1fr auto auto auto auto auto;
+  grid-template-columns: 1fr auto auto auto auto auto auto;
   gap: 16px;
   align-items: center;
   align-content: center;

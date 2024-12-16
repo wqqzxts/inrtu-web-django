@@ -47,6 +47,7 @@ class Character(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE, null=True)
     position = models.ForeignKey(Position, on_delete=models.CASCADE, null=True)
     skill = models.ForeignKey(Skills, on_delete=models.CASCADE, null=True)
+    picture = models.ImageField("Изображение", null=True, upload_to="characters")
 
     class Meta:
         verbose_name = "Персонаж"
