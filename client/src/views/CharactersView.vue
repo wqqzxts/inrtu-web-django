@@ -8,6 +8,7 @@ const teams = ref([]);
 const positions = ref([]);
 const skills = ref([]);
 const charactersPictureRef = ref();
+const modalPictureRef = ref("");
 const characterAddImageURL = ref();
 
 const characterToAdd = ref({});
@@ -59,10 +60,26 @@ async function onCharacterEditClick(character) {
   characterToEdit.value = { ...character };
 }
 
+async function onImageClick(picture) {
+  modalPictureRef.value = picture;
+}
+
 async function onUpdateCharacter() {
-  await axios.patch(`/api/characters/${characterToEdit.value.id}/`, {
-    ...characterToEdit.value,
+  const formData = new FormData();
+
+  formData.append("picture", charactersPictureRef.value.files[0]);
+
+  formData.set("name", characterToEdit.value.name);
+  formData.set("team", characterToEdit.value.team);
+  formData.set("position", characterToEdit.value.position);
+  formData.set("skill", characterToEdit.value.skill);
+
+  await axios.patch(`/api/characters/${characterToEdit.value.id}/`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
   });
+
   await fetchCharacters();
 }
 ///////////////////////////////////////////////////////////////////////
@@ -87,10 +104,10 @@ async function fetchCharacters() {
 }
 
 onBeforeMount(async () => {
-  await fetchCharacters();
   await fetchTeams();
   await fetchPositions();
   await fetchSkills();
+  await fetchCharacters();
 });
 </script>
 
@@ -98,8 +115,8 @@ onBeforeMount(async () => {
   <div class="container-fluid">
     <div class="p-2">
       <form @submit.prevent.stop="onCharacterAdd">
-        <div class="row">
-          <div class="col">
+        <div class="row custom-row">
+          <div class="my-1 col-12 col-md">
             <div class="form-floating">
               <input
                 type="text"
@@ -111,17 +128,7 @@ onBeforeMount(async () => {
             </div>
           </div>
 
-          <div class="col-auto">
-            <input
-              class="form-control"
-              type="file"
-              ref="charactersPictureRef"
-              @change="charactersAddPictureChange"
-              required
-            />
-          </div>
-
-          <div class="col-auto">
+          <div class="my-1 col-12 col-md">
             <div class="form-floating">
               <select
                 class="form-select"
@@ -136,70 +143,98 @@ onBeforeMount(async () => {
             </div>
           </div>
 
-          <div class="col-auto">
+          <div class="my-1 col-12 col-md">
             <div class="form-floating">
               <select
                 class="form-select"
                 v-model="characterToAdd.position"
                 required
               >
-                <option :value="p.id" v-for="p in positions" v-bind:key="p.id">
-                  {{ p.name }}
+                <option :value="t.id" v-for="t in positions" v-bind:key="t.id">
+                  {{ t.name }}
                 </option>
               </select>
-              <label for="floatingInput">Роль</label>
+              <label for="floatingInput">Позиция</label>
             </div>
           </div>
 
-          <div class="col-auto">
+          <div class="my-1 col-12 col-md">
             <div class="form-floating">
               <select
                 class="form-select"
                 v-model="characterToAdd.skill"
                 required
               >
-                <option :value="s.id" v-for="s in skills" v-bind:key="s.id">
-                  {{ s.name }}
+                <option :value="t.id" v-for="t in skills" v-bind:key="t.id">
+                  {{ t.name }}
                 </option>
               </select>
               <label for="floatingInput">Способность</label>
             </div>
           </div>
 
-          <div class="col-auto" style="align-content: center">
-            <button class="btn btn-outline-success btn-lg">
-              <i class="bi bi-database-fill-add"></i>
-            </button>
+          <div class="my-1 col-12 col-md-1" style="align-content: center">
+            <input
+              class="form-control"
+              type="file"
+              ref="charactersPictureRef"
+              @change="charactersAddPictureChange"
+              required
+            />
+          </div>
+
+          <div class="my-1 col-12 col-md-auto">
+            <div
+              style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+              "
+            >
+              <button class="btn btn-outline-success btn-lg">
+                <i class="bi bi-database-fill-add"></i>
+              </button>
+            </div>
           </div>
         </div>
       </form>
 
-      <div>
-        <div
-          v-for="item in characters"
-          class="character-item"
-          v-bind:key="item"
-        >
-          <div>{{ item.name }}</div>
-          <div>{{ teamByID[item.team]?.name }}</div>
-          <div>{{ positionByID[item.position]?.name }}</div>
-          <div>{{ skillByID[item.skill]?.name }}</div>
+      <div
+        v-for="item in characters"
+        :key="item.id"
+        class="row-auto content-item"
+      >
+        <div>{{ item.name }}</div>
+        <div class="content-subitem">
+          {{ teamByID[item.team]?.name }}
+        </div>
+        <div class="content-subitem">
+          {{ positionByID[item.position]?.name }}
+        </div>
+        <div class="content-subitem">
+          {{ skillByID[item.skill]?.name }}
+        </div>
+        <div>
           <img
             :src="item.picture"
-            style="max-height: 60px; cursor: pointer"
-          />
-          <button
-            class="btn btn-outline-primary"
-            @click="onCharacterEditClick(item)"
+            style="max-height: 58px; cursor: zoom-in"
+            @click="onImageClick(item.picture)"
             data-bs-toggle="modal"
-            data-bs-target="#editCharacterModal"
-          >
-            <i class="bi bi-pencil-fill"></i>
-          </button>
-          <button class="btn btn-outline-danger" @click="onRemoveClick(item)">
-            <i class="bi bi-trash-fill"></i>
-          </button>
+            data-bs-target="#imageContentModal"
+          />
         </div>
+        <button
+          class="btn btn-outline-primary"
+          @click="onCharacterEditClick(item)"
+          data-bs-toggle="modal"
+          data-bs-target="#editCharacterModal"
+        >
+          <i class="bi bi-pencil-fill"></i>
+        </button>
+        <button class="btn btn-outline-danger" @click="onRemoveClick(item)">
+          <i class="bi bi-trash-fill"></i>
+        </button>
       </div>
 
       <div class="modal fade" id="editCharacterModal" tabindex="-1">
@@ -211,63 +246,90 @@ onBeforeMount(async () => {
               </h1>
             </div>
             <div class="modal-body">
-              <div class="row">
-                <div class="col-4">
-                  <div class="form-floating">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <div class="col-auto">
+                      <form
+                        class="form-floating"
+                        @submit.prevent.stop="onUpdateCharacter"
+                      >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="floatingInputValue"
+                          v-model="characterToEdit.name"
+                          required
+                        />
+                        <label for="floatingInputValue">Имя</label>
+                      </form>
+                    </div>
+                  </div>
+                  
+                  <div class="col">
+                    <div class="col-auto">
+                      <div class="form-floating">
+                        <select class="form-select" id="floatingSelect">
+                          <option
+                            selected
+                            :value="t.id"
+                            v-for="t in teams"
+                            v-bind:key="t.id"
+                          >
+                            {{ t.name }}
+                          </option>
+                        </select>
+                        <label for="floatingSelect">Команда</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col">
+                    <div class="col-auto">
+                      <div class="form-floating">
+                        <select class="form-select" id="floatingSelect">
+                          <option
+                            selected
+                            :value="t.id"
+                            v-for="t in positions"
+                            v-bind:key="t.id"
+                          >
+                            {{ t.name }}
+                          </option>
+                        </select>
+                        <label for="floatingSelect">Позиция</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col">
+                    <div class="col-auto">
+                      <div class="form-floating">
+                        <select class="form-select" id="floatingSelect">
+                          <option
+                            selected
+                            :value="t.id"
+                            v-for="t in skills"
+                            v-bind:key="t.id"
+                          >
+                            {{ t.name }}
+                          </option>
+                        </select>
+                        <label for="floatingSelect">Способность</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row my-2">
+                  <div class="my-1" style="align-content: center">
                     <input
-                      type="text"
                       class="form-control"
-                      v-model="characterToEdit.name"
+                      type="file"
+                      ref="charactersPictureRef"
+                      @change="charactersAddPictureChange"
+                      required
                     />
-                    <label for="floatingInput">Имя</label>
-                  </div>
-                </div>
-
-                <div class="col-2">
-                  <div class="form-floating">
-                    <select class="form-select" v-model="characterToEdit.team">
-                      <option
-                        :value="t.id"
-                        v-for="t in teams"
-                        v-bind:key="t.id"
-                      >
-                        {{ t.name }}
-                      </option>
-                    </select>
-                    <label for="floatingInput">Команда</label>
-                  </div>
-                </div>
-
-                <div class="col-2">
-                  <div class="form-floating">
-                    <select
-                      class="form-select"
-                      v-model="characterToEdit.position"
-                    >
-                      <option
-                        :value="p.id"
-                        v-for="p in positions"
-                        v-bind:key="p.id"
-                      >
-                        {{ p.name }}
-                      </option>
-                    </select>
-                    <label for="floatingInput">Роль</label>
-                  </div>
-                </div>
-
-                <div class="col-4">
-                  <div class="form-floating">
-                    <select class="form-select" v-model="characterToEdit.skill">
-                      <option
-                        :value="s.id"
-                        v-for="s in skills"
-                        v-bind:key="s.id"
-                      >
-                        {{ s.name }}
-                      </option>
-                    </select>
-                    <label for="floatingInput">Способность</label>
                   </div>
                 </div>
               </div>
@@ -292,12 +354,40 @@ onBeforeMount(async () => {
           </div>
         </div>
       </div>
+
+      <div class="modal fade" id="imageContentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">
+                Изображение
+              </h1>
+            </div>
+            <div class="modal-body">
+              <img
+                :src="modalPictureRef"
+                class="img-fluid"
+                alt="Увеличенное изображение"
+              />
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-outline-danger"
+                data-bs-dismiss="modal"
+              >
+                <i class="bi bi-x-square-fill"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.character-item {
+.content-item {
   padding: 0.5rem;
   margin: 0.5rem 0;
   border: 1px solid silver;
@@ -309,39 +399,49 @@ onBeforeMount(async () => {
   align-content: center;
 }
 
-.custom-modal-width {
-  max-width: 1000px;
-  width: 900px;
-  max-height: 90vh;
-  overflow-y: auto;
+.content-subitem {
+  background-color: #cee1f9;
+  border-radius: 5px;
+  padding: 10px;
 }
 
-.zoom-image-container {
-  position: fixed;
-  left: 0;
-  top: 40px;
-  right: 0;
-  bottom: 0;
-  display: block;
-  padding: 1rem;
-  backdrop-filter: blur(4px);
-  z-index: 100;
-  transform: scale(0.2, 0.2);
-  transition: all 0.2s ease-out;
-  opacity: 0;
-  height: 0;
-  overflow: hidden;
+@media (max-width: 1500px) {
+  .custom-row > div {
+    flex: 0 0 auto;
+    max-width: auto;
+  }
 }
 
-.zoom-image-container.active {
-  opacity: 1;
-  transform: scale(1, 1);
-  height: auto;
+.content-item {
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+  border: 1px solid silver;
+  border-radius: 6px;
+  display: grid;
+  grid-template-columns: 1fr auto auto auto auto auto auto;
+  gap: 16px;
+  align-items: center;
+  align-content: center;
 }
 
-.zoom-image-container img {
-  height: 100%;
-  width: 100%;
-  object-fit: contain;
+@media (max-width: 1000px) {
+  .content-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .content-item > div,
+  .content-item img,
+  .content-item button {
+    width: 100%;
+    text-align: center;
+    margin: 5px 0;
+  }
+
+  .content-item img {
+    max-height: auto;
+    margin-top: 10px;
+  }
 }
 </style>

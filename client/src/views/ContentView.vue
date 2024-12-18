@@ -121,7 +121,7 @@ onBeforeMount(async () => {
             </div>
           </div>
 
-          <div class="my-1 col-12 col-md-auto">
+          <div class="my-1 col-12 col-md">
             <div class="form-floating">
               <select class="form-select" v-model="contentToAdd.type" required>
                 <option
@@ -136,7 +136,7 @@ onBeforeMount(async () => {
             </div>
           </div>
 
-          <div class="my-1 col-12 col-md-auto">
+          <div class="my-1 col-12 col-md">
             <div class="form-floating">
               <input
                 type="number"
@@ -148,7 +148,7 @@ onBeforeMount(async () => {
             </div>
           </div>
 
-          <div class="my-1 col-12 col-md-auto">
+          <div class="my-1 col-12 col-md">
             <div class="form-floating">
               <input
                 type="number"
