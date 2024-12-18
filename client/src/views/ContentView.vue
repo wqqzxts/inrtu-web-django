@@ -14,18 +14,6 @@ const contentToEdit = ref({});
 const contentTypeByID = computed(() => {
   return _.keyBy(content_type.value, (x) => x.id);
 });
-
-const showZoomImageContainer = ref(false);
-const zoomImageUrl = ref("");
-
-function showZoomImage(imageUrl) {
-  zoomImageUrl.value = imageUrl;
-  showZoomImageContainer.value = true;
-}
-
-function hideZoomImage() {
-  showZoomImageContainer.value = false;
-}
 ///////////////////////////////////////////////////////////////////////
 async function onContentAdd() {
   const formData = new FormData();
@@ -179,10 +167,38 @@ onBeforeMount(async () => {
             </div>
           </div>
         </div>
-
       </form>
 
-      <div>
+      <div class="row-auto">
+        <div v-for="item in content" class="content-item" v-bind:key="item">
+          <div class="col-auto">{{ item.episode_name }}</div>
+          <div class="col-auto">{{ contentTypeByID[item.type]?.name }}</div>
+          <div class="col-auto">{{ item.episode }}</div>
+          <div class="col-auto">{{ item.volume }}</div>
+          <img :src="item.picture" style="max-height: 60px; cursor: pointer" />
+          <button
+            class="btn btn-outline-info"
+            @click="onContentEditClick(item)"
+            data-bs-toggle="modal"
+            data-bs-target="#descriptionContentModal"
+          >
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <button
+            class="btn btn-outline-primary"
+            @click="onContentEditClick(item)"
+            data-bs-toggle="modal"
+            data-bs-target="#editContentModal"
+          >
+            <i class="bi bi-pencil-fill"></i>
+          </button>
+          <button class="btn btn-outline-danger" @click="onRemoveClick(item)">
+            <i class="bi bi-trash-fill"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="row-auto">
         <div v-for="item in content" class="content-item" v-bind:key="item">
           <div>{{ item.episode_name }}</div>
           <div>{{ contentTypeByID[item.type]?.name }}</div>
@@ -191,7 +207,6 @@ onBeforeMount(async () => {
           <img
             :src="item.picture"
             style="max-height: 60px; cursor: pointer"
-            @click="showZoomImage(item.picture)"
           />
           <button
             class="btn btn-outline-info"
@@ -367,18 +382,17 @@ onBeforeMount(async () => {
         </div>
       </div>
     </div>
-
-    <div
-      class="zoom-image-container"
-      :class="{ active: showZoomImageContainer }"
-      @click="hideZoomImage"
-    >
-      <img :src="zoomImageUrl" alt="Увеличенное изображение" />
-    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
+@media (max-width: 1500px) {
+  .custom-row > div {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
 .content-item {
   padding: 0.5rem;
   margin: 0.5rem 0;
@@ -391,46 +405,24 @@ onBeforeMount(async () => {
   align-content: center;
 }
 
-.custom-modal-width {
-  max-width: 1000px;
-  width: 900px;
-  max-height: 90vh;
-  overflow-y: auto;
-}
 
-.zoom-image-container {
-  position: fixed;
-  left: 0;
-  top: 40px;
-  right: 0;
-  bottom: 0;
-  display: block;
-  padding: 1rem;
-  backdrop-filter: blur(4px);
-  z-index: 100;
-  transform: scale(0.2, 0.2);
-  transition: all 0.2s ease-out;
-  opacity: 0;
-  height: 0;
-  overflow: hidden;
-}
+@media (max-width: 800px) {
+  .content-item {
+    grid-template-columns: 1fr;
+  }
 
-.zoom-image-container.active {
-  opacity: 1;
-  transform: scale(1, 1);
-  height: auto;
-}
+  .content-item > div {
+    grid-column: 1;
+  }
 
-.zoom-image-container img {
-  height: 100%;
-  width: 100%;
-  object-fit: contain;
-}
+  .content-item img {
+    grid-column: 1;
+    margin-top: 10px;
+  }
 
-@media (max-width: 1500px) {
-  .custom-row > div {
-    flex: 0 0 100%;
-    max-width: 100%;
+  .content-item button {
+    grid-column: 1;
+    margin-top: 5px;
   }
 }
 </style>
