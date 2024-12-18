@@ -6,6 +6,7 @@ import _ from "lodash";
 const content = ref([]);
 const content_type = ref([]);
 const contentPictureRef = ref();
+const modalPictureRef = ref("");
 const contentAddImageURL = ref();
 
 const contentToAdd = ref({});
@@ -48,6 +49,10 @@ async function onRemoveClick(content) {
 
 async function onContentEditClick(content) {
   contentToEdit.value = { ...content };
+}
+
+async function onImageClick(picture) {  
+  modalPictureRef.value = picture;
 }
 
 async function onUpdateContent() {
@@ -114,7 +119,7 @@ onBeforeMount(async () => {
                   {{ t.name }}
                 </option>
               </select>
-              <label for="floatingInput">Тип контента</label>
+              <label for="floatingInput">Тип</label>
             </div>
           </div>
 
@@ -126,7 +131,7 @@ onBeforeMount(async () => {
                 v-model="contentToAdd.episode"
                 required
               />
-              <label for="floatingInput">Номер эпизода</label>
+              <label for="floatingInput">№ эпизода</label>
             </div>
           </div>
 
@@ -138,7 +143,7 @@ onBeforeMount(async () => {
                 v-model="contentToAdd.volume"
                 required
               />
-              <label for="floatingInput">Номер раздела</label>
+              <label for="floatingInput">№ раздела</label>
             </div>
           </div>
 
@@ -169,62 +174,41 @@ onBeforeMount(async () => {
         </div>
       </form>
 
-      <div class="row-auto">
-        <div v-for="item in content" class="content-item" v-bind:key="item">
-          <div class="col-auto">{{ item.episode_name }}</div>
-          <div class="col-auto">{{ contentTypeByID[item.type]?.name }}</div>
-          <div class="col-auto">{{ item.episode }}</div>
-          <div class="col-auto">{{ item.volume }}</div>
-          <img :src="item.picture" style="max-height: 60px; cursor: pointer" />
-          <button
-            class="btn btn-outline-info"
-            @click="onContentEditClick(item)"
-            data-bs-toggle="modal"
-            data-bs-target="#descriptionContentModal"
-          >
-            <i class="bi bi-three-dots"></i>
-          </button>
-          <button
-            class="btn btn-outline-primary"
-            @click="onContentEditClick(item)"
-            data-bs-toggle="modal"
-            data-bs-target="#editContentModal"
-          >
-            <i class="bi bi-pencil-fill"></i>
-          </button>
-          <button class="btn btn-outline-danger" @click="onRemoveClick(item)">
-            <i class="bi bi-trash-fill"></i>
-          </button>
+      <div v-for="item in content" :key="item.id" class="row-auto content-item">
+        <div>{{ item.episode_name }}</div>
+        <div class="content-subitem">
+          {{ contentTypeByID[item.type]?.name }}
         </div>
-      </div>
-
-      <div class="row-auto">
-        <div v-for="item in content" class="content-item" v-bind:key="item">
-          <div>{{ item.episode_name }}</div>
-          <div>{{ contentTypeByID[item.type]?.name }}</div>
-          <div>{{ item.episode }}</div>
-          <div>{{ item.volume }}</div>
-          <img :src="item.picture" style="max-height: 60px; cursor: zoom-in" />
-          <button
-            class="btn btn-outline-info"
-            @click="onContentEditClick(item)"
+        <div class="content-subitem">{{ item.episode }} эпизод</div>
+        <div class="content-subitem">{{ item.volume }} раздел</div>
+        <div>
+          <img
+            :src="item.picture"
+            style="max-height: 58px; cursor: zoom-in"
+            @click="onImageClick(item.picture)"
             data-bs-toggle="modal"
-            data-bs-target="#descriptionContentModal"
-          >
-            <i class="bi bi-three-dots"></i>
-          </button>
-          <button
-            class="btn btn-outline-primary"
-            @click="onContentEditClick(item)"
-            data-bs-toggle="modal"
-            data-bs-target="#editContentModal"
-          >
-            <i class="bi bi-pencil-fill"></i>
-          </button>
-          <button class="btn btn-outline-danger" @click="onRemoveClick(item)">
-            <i class="bi bi-trash-fill"></i>
-          </button>
+            data-bs-target="#imageContentModal"
+          />
         </div>
+        <button
+          class="btn btn-outline-info"
+          @click="onContentEditClick(item)"
+          data-bs-toggle="modal"
+          data-bs-target="#descriptionContentModal"
+        >
+          <i class="bi bi-three-dots"></i>
+        </button>
+        <button
+          class="btn btn-outline-primary"
+          @click="onContentEditClick(item)"
+          data-bs-toggle="modal"
+          data-bs-target="#editContentModal"
+        >
+          <i class="bi bi-pencil-fill"></i>
+        </button>
+        <button class="btn btn-outline-danger" @click="onRemoveClick(item)">
+          <i class="bi bi-trash-fill"></i>
+        </button>
       </div>
 
       <div class="modal fade" id="editContentModal" tabindex="-1">
@@ -378,6 +362,30 @@ onBeforeMount(async () => {
           </div>
         </div>
       </div>
+
+      <div class="modal fade" id="imageContentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">
+                Изображение
+              </h1>
+            </div>
+            <div class="modal-body">
+              <img :src="modalPictureRef" class="img-fluid" alt="Увеличенное изображение" />
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-outline-danger"
+                data-bs-dismiss="modal"
+              >
+                <i class="bi bi-x-square-fill"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -395,10 +403,16 @@ onBeforeMount(async () => {
   align-content: center;
 }
 
+.content-subitem {
+  background-color: #cee1f9;
+  border-radius: 5px;
+  padding: 10px;
+}
+
 @media (max-width: 1500px) {
   .custom-row > div {
-    flex: 0 0 100%;
-    max-width: 100%;
+    flex: 0 0 auto;
+    max-width: auto;
   }
 }
 
@@ -430,7 +444,7 @@ onBeforeMount(async () => {
   }
 
   .content-item img {
-    max-height: 60px;
+    max-height: auto;
     margin-top: 10px;
   }
 }

@@ -24,18 +24,6 @@ const positionByID = computed(() => {
 const skillByID = computed(() => {
   return _.keyBy(skills.value, (x) => x.id);
 });
-
-const showZoomImageContainer = ref(false);
-const zoomImageUrl = ref("");
-
-function showZoomImage(imageUrl) {
-  zoomImageUrl.value = imageUrl;
-  showZoomImageContainer.value = true;
-}
-
-function hideZoomImage() {
-  showZoomImageContainer.value = false;
-}
 ///////////////////////////////////////////////////////////////////////
 async function onCharacterAdd() {
   const formData = new FormData();
@@ -199,7 +187,6 @@ onBeforeMount(async () => {
           <img
             :src="item.picture"
             style="max-height: 60px; cursor: pointer"
-            @click="showZoomImage(item.picture)"
           />
           <button
             class="btn btn-outline-primary"
@@ -305,14 +292,6 @@ onBeforeMount(async () => {
           </div>
         </div>
       </div>
-    </div>
-
-    <div
-      class="zoom-image-container"
-      :class="{ active: showZoomImageContainer }"
-      @click="hideZoomImage"
-    >
-      <img :src="zoomImageUrl" alt="Увеличенное изображение" />
     </div>
   </div>
 </template>
