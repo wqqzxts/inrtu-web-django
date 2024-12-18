@@ -204,10 +204,7 @@ onBeforeMount(async () => {
           <div>{{ contentTypeByID[item.type]?.name }}</div>
           <div>{{ item.episode }}</div>
           <div>{{ item.volume }}</div>
-          <img
-            :src="item.picture"
-            style="max-height: 60px; cursor: pointer"
-          />
+          <img :src="item.picture" style="max-height: 60px; cursor: zoom-in" />
           <button
             class="btn btn-outline-info"
             @click="onContentEditClick(item)"
@@ -386,6 +383,18 @@ onBeforeMount(async () => {
 </template>
 
 <style lang="scss" scoped>
+.content-item {
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+  border: 1px solid silver;
+  border-radius: 6px;
+  display: grid;
+  grid-template-columns: 1fr auto auto auto auto auto auto auto;
+  gap: 16px;
+  align-items: center;
+  align-content: center;
+}
+
 @media (max-width: 1500px) {
   .custom-row > div {
     flex: 0 0 100%;
@@ -405,24 +414,24 @@ onBeforeMount(async () => {
   align-content: center;
 }
 
-
-@media (max-width: 800px) {
+@media (max-width: 1000px) {
   .content-item {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
-  .content-item > div {
-    grid-column: 1;
+  .content-item > div,
+  .content-item img,
+  .content-item button {
+    width: 100%;
+    text-align: center;
+    margin: 5px 0;
   }
 
   .content-item img {
-    grid-column: 1;
+    max-height: 60px;
     margin-top: 10px;
-  }
-
-  .content-item button {
-    grid-column: 1;
-    margin-top: 5px;
   }
 }
 </style>
