@@ -134,14 +134,6 @@ onBeforeMount(async () => {
           </div>
 
           <div class="col-auto">
-            <img
-              :src="characterAddImageURL"
-              style="max-height: 60px"
-              required
-            />
-          </div>
-
-          <div class="col-auto">
             <div class="form-floating">
               <select
                 class="form-select"
@@ -204,9 +196,6 @@ onBeforeMount(async () => {
           <div>{{ teamByID[item.team]?.name }}</div>
           <div>{{ positionByID[item.position]?.name }}</div>
           <div>{{ skillByID[item.skill]?.name }}</div>
-          <!-- <div v-show="item.picture">
-            <img :src="item.picture" style="max-height: 60px" />
-          </div> -->
           <img
             :src="item.picture"
             style="max-height: 60px; cursor: pointer"
@@ -342,38 +331,38 @@ onBeforeMount(async () => {
 }
 
 .custom-modal-width {
-    max-width: 1000px;
-    width: 900px;
-    max-height: 90vh;
-    overflow-y: auto;
+  max-width: 1000px;
+  width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .zoom-image-container {
-    position: fixed;
-    left: 0;
-    top: 40px;
-    right: 0;
-    bottom: 0;
-    display: block;
-    padding: 1rem;
-    backdrop-filter: blur(4px);
-    z-index: 100;
-    transform: scale(0.2, 0.2);
-    transition: all 0.2s ease-out;
-    opacity: 0;
-    height: 0;
-    overflow: hidden;
+  position: fixed;
+  left: 0;
+  top: 40px;
+  right: 0;
+  bottom: 0;
+  display: block;
+  padding: 1rem;
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  transform: scale(0.2, 0.2);
+  transition: all 0.2s ease-out;
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
 }
 
 .zoom-image-container.active {
-    opacity: 1;
-    transform: scale(1, 1);
-    height: auto;
+  opacity: 1;
+  transform: scale(1, 1);
+  height: auto;
 }
 
 .zoom-image-container img {
-    height: 100%;
-    width: 100%;
-    object-fit: contain;
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
 }
 </style>

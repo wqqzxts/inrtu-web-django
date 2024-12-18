@@ -23,7 +23,7 @@ class ContentTypeSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class ContentSerializer(serializers.ModelSerializer):
-    type = ContentTypeSerializer(read_only=True)
+    type = serializers.PrimaryKeyRelatedField(queryset=ContentType.objects.all())
 
     class Meta:
         model = Content

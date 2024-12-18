@@ -164,17 +164,12 @@ onBeforeMount(async () => {
         </div>
       </form>
 
-      <div v-if="loading">Гружу...</div>
-
       <div>
         <div v-for="item in content" class="content-item" v-bind:key="item">
           <div>{{ item.episode_name }}</div>
-          <div>{{ contentTypeByID[item.id]?.name }}</div>
+          <div>{{ contentTypeByID[item.type]?.name }}</div>
           <div>{{ item.episode }}</div>
           <div>{{ item.volume }}</div>
-          <!-- <div v-show="item.picture">
-            <img :src="item.picture" style="max-height: 60px" />
-          </div> -->
           <img
             :src="item.picture"
             style="max-height: 60px; cursor: pointer"
