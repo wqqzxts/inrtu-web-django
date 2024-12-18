@@ -51,14 +51,27 @@ async function onContentEditClick(content) {
   contentToEdit.value = { ...content };
 }
 
-async function onImageClick(picture) {  
+async function onImageClick(picture) {
   modalPictureRef.value = picture;
 }
 
 async function onUpdateContent() {
-  await axios.patch(`/api/content/${contentToEdit.value.id}/`, {
-    ...contentToEdit.value,
+  const formData = new FormData();
+
+  formData.append("picture", contentPictureRef.value.files[0]);
+
+  formData.set("episode_name", contentToEdit.value.episode_name);
+  formData.set("type", contentToEdit.value.type);
+  formData.set("episode", contentToEdit.value.episode);
+  formData.set("volume", contentToEdit.value.volume);
+  formData.set("description", contentToEdit.value.description);
+
+  await axios.patch(`/api/content/${contentToEdit.value.id}/`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
   });
+
   await fetchContent();
 }
 
@@ -235,7 +248,7 @@ onBeforeMount(async () => {
                           v-model="contentToEdit.episode_name"
                           required
                         />
-                        <label for="floatingInputValue">Название эпизода</label>
+                        <label for="floatingInputValue">Название</label>
                       </form>
                     </div>
                   </div>
@@ -252,7 +265,7 @@ onBeforeMount(async () => {
                             {{ t.name }}
                           </option>
                         </select>
-                        <label for="floatingSelect">Тип контента</label>
+                        <label for="floatingSelect">Тип</label>
                       </div>
                     </div>
                   </div>
@@ -291,6 +304,22 @@ onBeforeMount(async () => {
                     </div>
                   </div>
                 </div>
+
+                <div class="row my-2">
+                  <div
+                    class="my-1"
+                    style="align-content: center"
+                  >
+                    <input
+                      class="form-control"
+                      type="file"
+                      ref="contentPictureRef"
+                      @change="contentAddPictureChange"
+                      required
+                    />
+                  </div>
+                </div>
+
                 <div class="row my-2">
                   <div class="col">
                     <div class="form-floating">
@@ -372,7 +401,11 @@ onBeforeMount(async () => {
               </h1>
             </div>
             <div class="modal-body">
-              <img :src="modalPictureRef" class="img-fluid" alt="Увеличенное изображение" />
+              <img
+                :src="modalPictureRef"
+                class="img-fluid"
+                alt="Увеличенное изображение"
+              />
             </div>
             <div class="modal-footer">
               <button
