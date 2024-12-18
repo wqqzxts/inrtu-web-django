@@ -90,8 +90,8 @@ onBeforeMount(async () => {
   <div class="container-fluid">
     <div class="p-2">
       <form @submit.prevent.stop="onContentAdd">
-        <div class="row">
-          <div class="col">
+        <div class="row custom-row">
+          <div class="my-1 col-12 col-md">
             <div class="form-floating">
               <input
                 type="text"
@@ -103,21 +103,19 @@ onBeforeMount(async () => {
             </div>
           </div>
 
-          <div class="col-auto">
-            <input
-              class="form-control"
-              type="file"
-              ref="contentPictureRef"
-              @change="contentAddPictureChange"
-              required
-            />
+          <div class="my-1 col-12 col-md">
+            <div class="form-floating">
+              <input
+                type="text"
+                class="form-control"
+                v-model="contentToAdd.description"
+                required
+              />
+              <label for="floatingInput">Описание эпизода</label>
+            </div>
           </div>
 
-          <div class="col-auto">
-            <img :src="contentAddImageURL" style="max-height: 60px" required />
-          </div>
-
-          <div class="col-auto">
+          <div class="my-1 col-12 col-md-auto">
             <div class="form-floating">
               <select class="form-select" v-model="contentToAdd.type" required>
                 <option
@@ -132,7 +130,7 @@ onBeforeMount(async () => {
             </div>
           </div>
 
-          <div class="col-auto">
+          <div class="my-1 col-12 col-md-auto">
             <div class="form-floating">
               <input
                 type="number"
@@ -144,7 +142,7 @@ onBeforeMount(async () => {
             </div>
           </div>
 
-          <div class="col-auto">
+          <div class="my-1 col-12 col-md-auto">
             <div class="form-floating">
               <input
                 type="number"
@@ -156,12 +154,32 @@ onBeforeMount(async () => {
             </div>
           </div>
 
-          <div class="col-auto" style="align-content: center">
-            <button class="btn btn-outline-success btn-lg">
-              <i class="bi bi-database-fill-add"></i>
-            </button>
+          <div class="my-1 col-12 col-md-1" style="align-content: center">
+            <input
+              class="form-control"
+              type="file"
+              ref="contentPictureRef"
+              @change="contentAddPictureChange"
+              required
+            />
+          </div>
+
+          <div class="my-1 col-12 col-md-auto">
+            <div
+              style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+              "
+            >
+              <button class="btn btn-outline-success btn-lg">
+                <i class="bi bi-database-fill-add"></i>
+              </button>
+            </div>
           </div>
         </div>
+
       </form>
 
       <div>
@@ -407,5 +425,12 @@ onBeforeMount(async () => {
   height: 100%;
   width: 100%;
   object-fit: contain;
+}
+
+@media (max-width: 1500px) {
+  .custom-row > div {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
 }
 </style>
