@@ -445,6 +445,7 @@ onBeforeMount(async () => {
   padding: 0.5rem;
   margin: 0.5rem 0;
   border-radius: 6px;
+  border: solid 2px #7790b8;
   display: grid;
   grid-template-columns: 1fr auto auto auto auto auto auto auto;
   gap: 16px;
