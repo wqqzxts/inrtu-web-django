@@ -103,133 +103,145 @@ onBeforeMount(async () => {
 <template>
   <div class="container-fluid">
     <div class="p-2">
-      <form @submit.prevent.stop="onContentAdd">
-        <div class="row custom-row">
-          <div class="my-1 col-12 col-md">
-            <div class="form-floating">
-              <input
-                type="text"
-                class="form-control"
-                v-model="contentToAdd.episode_name"
-                required
-              />
-              <label for="floatingInput">Название эпизода</label>
+      <div class="col">
+        <form @submit.prevent.stop="onContentAdd">
+          <div class="row custom-row background-filler m-1">
+            <div class="my-1 col-12 col-md">
+              <div class="form-floating add-subitem">
+                <input
+                  type="text"
+                  class="form-control custom-color"
+                  v-model="contentToAdd.episode_name"
+                  required
+                />
+                <label for="floatingInput">Название эпизода</label>
+              </div>
             </div>
-          </div>
 
-          <div class="my-1 col-12 col-md">
-            <div class="form-floating">
-              <input
-                type="text"
-                class="form-control"
-                v-model="contentToAdd.description"
-                required
-              />
-              <label for="floatingInput">Описание эпизода</label>
+            <div class="my-1 col-12 col-md">
+              <div class="form-floating add-subitem">
+                <input
+                  type="text"
+                  class="form-control custom-color"
+                  v-model="contentToAdd.description"
+                  required
+                />
+                <label for="floatingInput">Описание эпизода</label>
+              </div>
             </div>
-          </div>
 
-          <div class="my-1 col-12 col-md">
-            <div class="form-floating">
-              <select class="form-select" v-model="contentToAdd.type" required>
-                <option
-                  :value="t.id"
-                  v-for="t in content_type"
-                  v-bind:key="t.id"
+            <div class="my-1 col-12 col-md">
+              <div class="form-floating add-subitem">
+                <select
+                  class="form-select custom-color"
+                  v-model="contentToAdd.type"
+                  required
                 >
-                  {{ t.name }}
-                </option>
-              </select>
-              <label for="floatingInput">Тип</label>
+                  <option
+                    :value="t.id"
+                    v-for="t in content_type"
+                    v-bind:key="t.id"
+                  >
+                    {{ t.name }}
+                  </option>
+                </select>
+                <label for="floatingInput">Тип</label>
+              </div>
             </div>
-          </div>
 
-          <div class="my-1 col-12 col-md">
-            <div class="form-floating">
+            <div class="my-1 col-12 col-md">
+              <div class="form-floating add-subitem">
+                <input
+                  type="number"
+                  class="form-control custom-color"
+                  v-model="contentToAdd.episode"
+                  required
+                />
+                <label for="floatingInput">№ эпизода</label>
+              </div>
+            </div>
+
+            <div class="my-1 col-12 col-md">
+              <div class="form-floating add-subitem">
+                <input
+                  type="number"
+                  class="form-control custom-color"
+                  v-model="contentToAdd.volume"
+                  required
+                />
+                <label for="floatingInput">№ раздела</label>
+              </div>
+            </div>
+
+            <div class="my-1 col-12 col-md-1" style="align-content: center">
               <input
-                type="number"
                 class="form-control"
-                v-model="contentToAdd.episode"
+                type="file"
+                ref="contentPictureRefAdd"
+                @change="contentAddPictureChange"
                 required
               />
-              <label for="floatingInput">№ эпизода</label>
+            </div>
+
+            <div class="my-1 col-12 col-md-auto">
+              <div
+                style="
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  height: 100%;
+                "
+              >
+                <button class="btn btn-outline-success btn-lg">
+                  <i class="bi bi-database-fill-add"></i>
+                </button>
+              </div>
             </div>
           </div>
+        </form>
+      </div>
 
-          <div class="my-1 col-12 col-md">
-            <div class="form-floating">
-              <input
-                type="number"
-                class="form-control"
-                v-model="contentToAdd.volume"
-                required
-              />
-              <label for="floatingInput">№ раздела</label>
-            </div>
+      <div class="col m-1">
+        <div
+          v-for="item in content"
+          :key="item.id"
+          class="row-auto content-item background-filler"
+        >
+          <div>{{ item.episode_name }}</div>
+          <div class="content-subitem">
+            {{ contentTypeByID[item.type]?.name }}
           </div>
-
-          <div class="my-1 col-12 col-md-1" style="align-content: center">
-            <input
-              class="form-control"
-              type="file"
-              ref="contentPictureRefAdd"
-              @change="contentAddPictureChange"
-              required
+          <div class="content-subitem">{{ item.episode }} эпизод</div>
+          <div class="content-subitem">{{ item.volume }} раздел</div>
+          <div>
+            <img
+              :src="item.picture"
+              style="max-height: 58px; cursor: zoom-in"
+              @click="onImageClick(item.picture)"
+              data-bs-toggle="modal"
+              data-bs-target="#imageContentModal"
             />
           </div>
-
-          <div class="my-1 col-12 col-md-auto">
-            <div
-              style="
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100%;
-              "
-            >
-              <button class="btn btn-outline-success btn-lg">
-                <i class="bi bi-database-fill-add"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-      </form>
-
-      <div v-for="item in content" :key="item.id" class="row-auto content-item">
-        <div>{{ item.episode_name }}</div>
-        <div class="content-subitem">
-          {{ contentTypeByID[item.type]?.name }}
-        </div>
-        <div class="content-subitem">{{ item.episode }} эпизод</div>
-        <div class="content-subitem">{{ item.volume }} раздел</div>
-        <div>
-          <img
-            :src="item.picture"
-            style="max-height: 58px; cursor: zoom-in"
-            @click="onImageClick(item.picture)"
+          <button
+            class="btn btn-outline-info"
+            @click="onContentEditClick(item)"
             data-bs-toggle="modal"
-            data-bs-target="#imageContentModal"
-          />
+            data-bs-target="#descriptionContentModal"
+          >
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <button
+            class="btn btn-outline-primary"
+            @click="onContentEditClick(item)"
+            data-bs-toggle="modal"
+            data-bs-target="#editContentModal"
+          >
+            <i class="bi bi-pencil-fill"></i>
+          </button>
+          <button class="btn btn-outline-danger" @click="onRemoveClick(item)">
+            <i class="bi bi-trash-fill"></i>
+          </button>
         </div>
-        <button
-          class="btn btn-outline-info"
-          @click="onContentEditClick(item)"
-          data-bs-toggle="modal"
-          data-bs-target="#descriptionContentModal"
-        >
-          <i class="bi bi-three-dots"></i>
-        </button>
-        <button
-          class="btn btn-outline-primary"
-          @click="onContentEditClick(item)"
-          data-bs-toggle="modal"
-          data-bs-target="#editContentModal"
-        >
-          <i class="bi bi-pencil-fill"></i>
-        </button>
-        <button class="btn btn-outline-danger" @click="onRemoveClick(item)">
-          <i class="bi bi-trash-fill"></i>
-        </button>
       </div>
 
       <div class="modal fade" id="editContentModal" tabindex="-1">
@@ -314,10 +326,7 @@ onBeforeMount(async () => {
                 </div>
 
                 <div class="row my-2">
-                  <div
-                    class="my-1"
-                    style="align-content: center"
-                  >
+                  <div class="my-1" style="align-content: center">
                     <input
                       class="form-control"
                       type="file"
@@ -435,7 +444,6 @@ onBeforeMount(async () => {
 .content-item {
   padding: 0.5rem;
   margin: 0.5rem 0;
-  border: 1px solid silver;
   border-radius: 6px;
   display: grid;
   grid-template-columns: 1fr auto auto auto auto auto auto auto;
@@ -445,9 +453,25 @@ onBeforeMount(async () => {
 }
 
 .content-subitem {
-  background-color: #cee1f9;
-  border-radius: 5px;
-  padding: 10px;
+  background-color: #fefef9;
+  border-radius: 6px;
+  border: solid 2px #7790b8;
+  padding: 12.5px;
+}
+
+.add-subitem{
+  border: solid 2px #7790b8;
+  border-radius: 6px;
+}
+
+.custom-color{
+  background-color: #fefef9;
+}
+
+.background-filler {
+  background-color: #e7eef9;
+  border-radius: 6px;
+  padding: 5px;
 }
 
 @media (max-width: 1500px) {
@@ -460,7 +484,6 @@ onBeforeMount(async () => {
 .content-item {
   padding: 0.5rem;
   margin: 0.5rem 0;
-  border: 1px solid silver;
   border-radius: 6px;
   display: grid;
   grid-template-columns: 1fr auto auto auto auto auto auto auto;

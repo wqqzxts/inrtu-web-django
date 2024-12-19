@@ -11,9 +11,17 @@ onBeforeMount(() => {
 
 <template>
   <div class="container">
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <nav class="navbar navbar-expand-xxl p-3 background-filler">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">Меню</a>
+        <a class="navbar-brand">
+          <img
+            src="Z:\Qzxts\Education\.INRTU\(Code) WEB-Программирование\ВторойСеместр\templates\Site-logo.png"
+            alt="Меню"
+            width="135"
+            height="30"
+            class="d-inline-block align-text-top"
+          />
+        </a>
         <button
           class="navbar-toggler"
           type="button"
@@ -27,13 +35,13 @@ onBeforeMount(() => {
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
           <ul class="navbar-nav">
-            <li class="nav-item">
+            <li class="nav-item content-subitem">
               <router-link class="nav-link" to="/">Персонажи</router-link>
             </li>
-            <li class="nav-item">
+            <li class="nav-item content-subitem">
               <router-link class="nav-link" to="/content">Контент</router-link>
             </li>
-            <li class="nav-item dropdown">
+            <li class="nav-item dropdown content-subitem">
               <a
                 class="nav-link dropdown-toggle"
                 href="#"
@@ -80,4 +88,17 @@ onBeforeMount(() => {
 </template>
 
 <style scoped>
+.background-filler {
+  border: solid 2px #7790b8;
+  background-color: #e7eef9;
+  border-radius: 6px;  
+}
+
+.content-subitem {
+  background-color: #fefef9;
+  border-radius: 6px;
+  border: solid 2px #7790b8;
+  padding: 2.5px;
+  margin: 2.5px;
+}
 </style>

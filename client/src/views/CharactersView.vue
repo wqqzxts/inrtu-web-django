@@ -122,127 +122,135 @@ onBeforeMount(async () => {
 <template>
   <div class="container-fluid">
     <div class="p-2">
-      <form @submit.prevent.stop="onCharacterAdd">
-        <div class="row custom-row">
-          <div class="my-1 col-12 col-md">
-            <div class="form-floating">
+      <div class="col">
+        <form @submit.prevent.stop="onCharacterAdd">
+          <div class="row custom-row background-filler m-1">
+            <div class="my-1 col-12 col-md">
+              <div class="form-floating add-subitem">
+                <input
+                  type="text"
+                  class="form-control custom-color"
+                  v-model="characterToAdd.name"
+                  required
+                />
+                <label for="floatingInput">Имя</label>
+              </div>
+            </div>
+
+            <div class="my-1 col-12 col-md">
+              <div class="form-floating add-subitem">
+                <select
+                  class="form-select custom-color"
+                  v-model="characterToAdd.team"
+                  required
+                >
+                  <option :value="t.id" v-for="t in teams" v-bind:key="t.id">
+                    {{ t.name }}
+                  </option>
+                </select>
+                <label for="floatingInput">Команда</label>
+              </div>
+            </div>
+
+            <div class="my-1 col-12 col-md">
+              <div class="form-floating add-subitem">
+                <select
+                  class="form-select custom-color"
+                  v-model="characterToAdd.position"
+                  required
+                >
+                  <option
+                    :value="t.id"
+                    v-for="t in positions"
+                    v-bind:key="t.id"
+                  >
+                    {{ t.name }}
+                  </option>
+                </select>
+                <label for="floatingInput">Позиция</label>
+              </div>
+            </div>
+
+            <div class="my-1 col-12 col-md" >
+              <div class="form-floating add-subitem">
+                <select
+                  class="form-select custom-color"
+                  v-model="characterToAdd.skill"
+                  required
+                >
+                  <option :value="t.id" v-for="t in skills" v-bind:key="t.id">
+                    {{ t.name }}
+                  </option>
+                </select>
+                <label for="floatingInput">Способность</label>
+              </div>
+            </div>
+
+            <div class="my-1 col-12 col-md-1" style="align-content: center">
               <input
-                type="text"
                 class="form-control"
-                v-model="characterToAdd.name"
+                type="file"
+                ref="charactersPictureRefAdd"
+                @change="charactersAddPictureChange"
                 required
               />
-              <label for="floatingInput">Имя</label>
             </div>
-          </div>
 
-          <div class="my-1 col-12 col-md">
-            <div class="form-floating">
-              <select
-                class="form-select"
-                v-model="characterToAdd.team"
-                required
+            <div class="my-1 col-12 col-md-auto">
+              <div
+                style="
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  height: 100%;
+                "
               >
-                <option :value="t.id" v-for="t in teams" v-bind:key="t.id">
-                  {{ t.name }}
-                </option>
-              </select>
-              <label for="floatingInput">Команда</label>
+                <button class="btn btn-outline-success btn-lg">
+                  <i class="bi bi-database-fill-add"></i>
+                </button>
+              </div>
             </div>
           </div>
+        </form>
+      </div>
 
-          <div class="my-1 col-12 col-md">
-            <div class="form-floating">
-              <select
-                class="form-select"
-                v-model="characterToAdd.position"
-                required
-              >
-                <option :value="t.id" v-for="t in positions" v-bind:key="t.id">
-                  {{ t.name }}
-                </option>
-              </select>
-              <label for="floatingInput">Позиция</label>
-            </div>
+      <div class="col m-1">
+        <div
+          v-for="item in characters"
+          :key="item.id"
+          class="row-auto content-item background-filler"
+        >
+          <div>{{ item.name }}</div>
+          <div class="content-subitem">
+            {{ teamByID[item.team]?.name }}
           </div>
-
-          <div class="my-1 col-12 col-md">
-            <div class="form-floating">
-              <select
-                class="form-select"
-                v-model="characterToAdd.skill"
-                required
-              >
-                <option :value="t.id" v-for="t in skills" v-bind:key="t.id">
-                  {{ t.name }}
-                </option>
-              </select>
-              <label for="floatingInput">Способность</label>
-            </div>
+          <div class="content-subitem">
+            {{ positionByID[item.position]?.name }}
           </div>
-
-          <div class="my-1 col-12 col-md-1" style="align-content: center">
-            <input
-              class="form-control"
-              type="file"
-              ref="charactersPictureRefAdd"
-              @change="charactersAddPictureChange"
-              required
+          <div class="content-subitem">
+            {{ skillByID[item.skill]?.name }}
+          </div>
+          <div>
+            <img
+              :src="item.picture"
+              style="max-height: 58px; cursor: zoom-in"
+              @click="onImageClick(item.picture)"
+              data-bs-toggle="modal"
+              data-bs-target="#imageContentModal"
             />
           </div>
-
-          <div class="my-1 col-12 col-md-auto">
-            <div
-              style="
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100%;
-              "
-            >
-              <button class="btn btn-outline-success btn-lg">
-                <i class="bi bi-database-fill-add"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-      </form>
-
-      <div
-        v-for="item in characters"
-        :key="item.id"
-        class="row-auto content-item"
-      >
-        <div>{{ item.name }}</div>
-        <div class="content-subitem">
-          {{ teamByID[item.team]?.name }}
-        </div>
-        <div class="content-subitem">
-          {{ positionByID[item.position]?.name }}
-        </div>
-        <div class="content-subitem">
-          {{ skillByID[item.skill]?.name }}
-        </div>
-        <div>
-          <img
-            :src="item.picture"
-            style="max-height: 58px; cursor: zoom-in"
-            @click="onImageClick(item.picture)"
+          <button
+            class="btn btn-outline-primary"
+            @click="onCharacterEditClick(item)"
             data-bs-toggle="modal"
-            data-bs-target="#imageContentModal"
-          />
+            data-bs-target="#editCharacterModal"
+          >
+            <i class="bi bi-pencil-fill"></i>
+          </button>
+          <button class="btn btn-outline-danger" @click="onRemoveClick(item)">
+            <i class="bi bi-trash-fill"></i>
+          </button>
         </div>
-        <button
-          class="btn btn-outline-primary"
-          @click="onCharacterEditClick(item)"
-          data-bs-toggle="modal"
-          data-bs-target="#editCharacterModal"
-        >
-          <i class="bi bi-pencil-fill"></i>
-        </button>
-        <button class="btn btn-outline-danger" @click="onRemoveClick(item)">
-          <i class="bi bi-trash-fill"></i>
-        </button>
       </div>
 
       <div class="modal fade" id="editCharacterModal" tabindex="-1">
@@ -273,7 +281,7 @@ onBeforeMount(async () => {
                       </form>
                     </div>
                   </div>
-                  
+
                   <div class="col">
                     <div class="col-auto">
                       <div class="form-floating">
@@ -398,7 +406,6 @@ onBeforeMount(async () => {
 .content-item {
   padding: 0.5rem;
   margin: 0.5rem 0;
-  border: 1px solid silver;
   border-radius: 6px;
   display: grid;
   grid-template-columns: 1fr auto auto auto auto auto auto;
@@ -408,9 +415,26 @@ onBeforeMount(async () => {
 }
 
 .content-subitem {
-  background-color: #cee1f9;
-  border-radius: 5px;
-  padding: 10px;
+  background-color: #fefef9;
+  border-radius: 6px;
+  border: solid 2px #7790b8;
+  padding: 12.5px;
+}
+
+.add-subitem{
+  border: solid 2px #7790b8;
+  border-radius: 6px;
+}
+
+.custom-color{
+  background-color: #fefef9;
+}
+
+.background-filler {
+  background-color: #e7eef9;
+  border-radius: 6px;
+  border: solid 2px #7790b8;
+  padding: 5px;
 }
 
 @media (max-width: 1500px) {
@@ -423,7 +447,6 @@ onBeforeMount(async () => {
 .content-item {
   padding: 0.5rem;
   margin: 0.5rem 0;
-  border: 1px solid silver;
   border-radius: 6px;
   display: grid;
   grid-template-columns: 1fr auto auto auto auto auto auto;
