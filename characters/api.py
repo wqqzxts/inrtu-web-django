@@ -128,13 +128,13 @@ class CharactersViewset(viewsets.ModelViewSet):
     queryset = Character.objects.all()
     serializer_class = CharacterSerializer
 
-    # def get_queryset(self):
-    #     qs = super().get_queryset()
-        
-    #     # фильтруем по текущему юзеру
-    #     qs = qs.filter(user=self.request.user)
-
-    #     return qs
+    def get_queryset(self):
+        qs = super().get_queryset()
+            
+        if self.request.user.is_superuser:
+            return qs 
+            
+        return qs.filter(user=self.request.user)
 
     class StatsSerializer(serializers.Serializer):
         count = serializers.IntegerField()
@@ -154,3 +154,4 @@ class CharactersViewset(viewsets.ModelViewSet):
         serializer = self.StatsSerializer(instance=stats)
 
         return Response(serializer.data)
+

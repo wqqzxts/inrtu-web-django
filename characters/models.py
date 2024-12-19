@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 class Team(models.Model):
     name = models.TextField("Название команды")
-    #user = models.ForeignKey("auth.User", verbose_name="Пользователь", on_delete=models.CASCADE. null=True)
+    user = models.ForeignKey("auth.User", verbose_name="Пользователь", on_delete=models.CASCADE, null=True)
 
     class Meta:
         verbose_name = "Команда"
@@ -14,7 +14,7 @@ class Team(models.Model):
 
 class Position(models.Model):
     name = models.TextField("Позиция на поле")
-    #user = models.ForeignKey("auth.User", verbose_name="Пользователь", on_delete=models.CASCADE. null=True)
+    user = models.ForeignKey("auth.User", verbose_name="Пользователь", on_delete=models.CASCADE, null=True)
 
     class Meta:
         verbose_name = "Позиция"
@@ -26,7 +26,7 @@ class Position(models.Model):
 class Skills(models.Model):
     name = models.TextField("Способность")
     description = models.TextField("Описание способности", null=True)
-    #user = models.ForeignKey("auth.User", verbose_name="Пользователь", on_delete=models.CASCADE. null=True)
+    user = models.ForeignKey("auth.User", verbose_name="Пользователь", on_delete=models.CASCADE, null=True)
 
     class Meta:
         verbose_name = "Способность"
@@ -37,7 +37,7 @@ class Skills(models.Model):
     
 class ContentType(models.Model):
     name = models.TextField("Тип медиа")
-    #user = models.ForeignKey("auth.User", verbose_name="Пользователь", on_delete=models.CASCADE. null=True)
+    user = models.ForeignKey("auth.User", verbose_name="Пользователь", on_delete=models.CASCADE, null=True)
 
     class Meta:
         verbose_name = "Тип контента"
@@ -52,7 +52,7 @@ class Character(models.Model):
     position = models.ForeignKey(Position, on_delete=models.CASCADE, null=True)
     skill = models.ForeignKey(Skills, on_delete=models.CASCADE, null=True)
     picture = models.ImageField("Изображение", null=True, upload_to="characters")
-    #user = models.ForeignKey("auth.User", verbose_name="Пользователь", on_delete=models.CASCADE. null=True)
+    user = models.ForeignKey("auth.User", verbose_name="Пользователь", on_delete=models.CASCADE, null=True)
 
     class Meta:
         verbose_name = "Персонаж"
@@ -65,7 +65,7 @@ class Content(models.Model):
     volume = models.IntegerField("Номер раздела")       #Том\Сезон
     description = models.TextField("Описание эпизода")
     picture = models.ImageField("Изображение", null=True, upload_to="characters")
-    #user = models.ForeignKey("auth.User", verbose_name="Пользователь", on_delete=models.CASCADE. null=True)
+    user = models.ForeignKey("auth.User", verbose_name="Пользователь", on_delete=models.CASCADE, null=True)
 
     class Meta:
         verbose_name = "Контент"
