@@ -153,16 +153,23 @@ async function fetchUsers() {
   return null;
 }
 
-onBeforeMount(async () => {
-  axios.defaults.headers.common["X-CSRFToken"] = Cookies.get("csrftoken");
-  await fetchStatistics();
-  await fetchTeams();
-  await fetchPositions();
-  await fetchSkills();
-  await fetchCharacters();
-  await fetchUsers();
-  await filterCharactersByUser();
-});
+let isFetching = false;
+
+async function fetchAllData() {
+  if (!isFetching) {
+    isFetching = true;
+    await fetchStatistics();
+    await fetchTeams();
+    await fetchPositions();
+    await fetchSkills();
+    await fetchCharacters();
+    await fetchUsers();
+    await filterCharactersByUser();
+    isFetching = false;
+  }
+}
+
+onBeforeMount(fetchAllData);
 </script>
 
 <template>
