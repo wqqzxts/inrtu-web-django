@@ -5,9 +5,11 @@ import _ from "lodash";
 
 const content = ref([]);
 const content_type = ref([]);
-const contentPictureRef = ref();
+const contentPictureRefAdd = ref();
+const contentPictureRefEdit = ref();
 const modalPictureRef = ref("");
 const contentAddImageURL = ref();
+const contentEditImageURL = ref();
 
 const contentToAdd = ref({});
 const contentToEdit = ref({});
@@ -19,7 +21,7 @@ const contentTypeByID = computed(() => {
 async function onContentAdd() {
   const formData = new FormData();
 
-  formData.append("picture", contentPictureRef.value.files[0]);
+  formData.append("picture", contentPictureRefAdd.value.files[0]);
 
   formData.set("episode_name", contentToAdd.value.episode_name);
   formData.set("type", contentToAdd.value.type);
@@ -38,7 +40,13 @@ async function onContentAdd() {
 
 async function contentAddPictureChange() {
   contentAddImageURL.value = URL.createObjectURL(
-    contentPictureRef.value.files[0]
+    contentPictureRefAdd.value.files[0]
+  );
+}
+
+async function contentEditPictureChange() {
+  contentEditImageURL.value = URL.createObjectURL(
+    contentPictureRefEdit.value.files[0]
   );
 }
 
@@ -58,7 +66,7 @@ async function onImageClick(picture) {
 async function onUpdateContent() {
   const formData = new FormData();
 
-  formData.append("picture", contentPictureRef.value.files[0]);
+  formData.append("picture", contentPictureRefEdit.value.files[0]);
 
   formData.set("episode_name", contentToEdit.value.episode_name);
   formData.set("type", contentToEdit.value.type);
@@ -164,7 +172,7 @@ onBeforeMount(async () => {
             <input
               class="form-control"
               type="file"
-              ref="contentPictureRef"
+              ref="contentPictureRefAdd"
               @change="contentAddPictureChange"
               required
             />
@@ -313,8 +321,8 @@ onBeforeMount(async () => {
                     <input
                       class="form-control"
                       type="file"
-                      ref="contentPictureRef"
-                      @change="contentAddPictureChange"
+                      ref="contentPictureRefEdit"
+                      @change="contentEditPictureChange"
                       required
                     />
                   </div>
