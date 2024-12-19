@@ -33,8 +33,18 @@ function filterCharactersByUser() {
 }
 watch(selectedUser, filterCharactersByUser);
 
+const statistics = ref({});
+async function fetchStatistics() {
+  try {
+    const r = await axios.get("/api/characters/stats/");
+    statistics.value = r.data;
+  } catch (error) {
+    console.error("Ошибка при получении статистики:", error);
+  }
+}
+
 const userStore = useUserStore();
-const {isSuperUser, isAuthenticated, username, userId } =
+const { isSuperUser, isAuthenticated, username, userId } =
   storeToRefs(userStore);
 
 const characterToAdd = ref({});
@@ -136,7 +146,7 @@ async function fetchCharacters() {
 }
 
 async function fetchUsers() {
-  if (isSuperUser.value){
+  if (isSuperUser.value) {
     const r = await axios.get("/api/users/");
     users.value = r.data;
   }
@@ -145,6 +155,7 @@ async function fetchUsers() {
 
 onBeforeMount(async () => {
   axios.defaults.headers.common["X-CSRFToken"] = Cookies.get("csrftoken");
+  await fetchStatistics();
   await fetchTeams();
   await fetchPositions();
   await fetchSkills();
@@ -206,7 +217,7 @@ onBeforeMount(async () => {
               </div>
             </div>
 
-            <div class="my-1 col-12 col-md" >
+            <div class="my-1 col-12 col-md">
               <div class="form-floating add-subitem">
                 <select
                   class="form-select custom-color"
@@ -256,15 +267,41 @@ onBeforeMount(async () => {
                   @change="filterCharactersByUser"
                   required
                 >
-                  <option
-                    :value="t"
-                    v-for="t in users"
-                    v-bind:key="t.id"
-                  >
+                  <option :value="t" v-for="t in users" v-bind:key="t.id">
                     {{ t.username }}
                   </option>
                 </select>
                 <label for="floatingInput">Фильтр по пользователю</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row custom-row background-filler m-1">
+            <div class="my-1 col-12 col-md">
+              <div class="row">
+                <div class="col-12">
+                  <h5 class="text-center" style="margin-bottom: 20px;"><strong>Статистика всех персонажей</strong></h5>
+                </div>
+                <div class="col-12 col-md-6">
+                  <div class="statistic-item">
+                    <strong>Всего:&nbsp;</strong> {{ statistics.count }}
+                  </div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <div class="statistic-item">
+                    <strong>Среднее количество:&nbsp;</strong> {{ statistics.avg.toFixed(0) }}
+                  </div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <div class="statistic-item">
+                    <strong>Максимум:&nbsp;</strong> {{ statistics.max }}
+                  </div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <div class="statistic-item">
+                    <strong>Минимум:&nbsp;</strong> {{ statistics.min }}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -342,7 +379,11 @@ onBeforeMount(async () => {
                   <div class="col">
                     <div class="col-auto">
                       <div class="form-floating">
-                        <select class="form-select" id="floatingSelect" v-model="characterToEdit.team">
+                        <select
+                          class="form-select"
+                          id="floatingSelect"
+                          v-model="characterToEdit.team"
+                        >
                           <option
                             selected
                             :value="t.id"
@@ -360,7 +401,11 @@ onBeforeMount(async () => {
                   <div class="col">
                     <div class="col-auto">
                       <div class="form-floating">
-                        <select class="form-select" id="floatingSelect" v-model="characterToEdit.position">
+                        <select
+                          class="form-select"
+                          id="floatingSelect"
+                          v-model="characterToEdit.position"
+                        >
                           <option
                             selected
                             :value="t.id"
@@ -378,7 +423,11 @@ onBeforeMount(async () => {
                   <div class="col">
                     <div class="col-auto">
                       <div class="form-floating">
-                        <select class="form-select" id="floatingSelect" v-model="characterToEdit.skill">
+                        <select
+                          class="form-select"
+                          id="floatingSelect"
+                          v-model="characterToEdit.skill"
+                        >
                           <option
                             selected
                             :value="t.id"
@@ -471,6 +520,16 @@ onBeforeMount(async () => {
   align-content: center;
 }
 
+.statistic-item {
+  padding: 10px;
+  background-color: #fefef9;
+  border-radius: 5px;
+  margin-bottom: 10px; 
+  display: flex;
+  justify-content: center;
+}
+
+
 .content-subitem {
   background-color: #fefef9;
   border-radius: 6px;
@@ -478,12 +537,12 @@ onBeforeMount(async () => {
   padding: 12.5px;
 }
 
-.add-subitem{
+.add-subitem {
   border: solid 2px #7790b8;
   border-radius: 6px;
 }
 
-.custom-color{
+.custom-color {
   background-color: #fefef9;
 }
 
