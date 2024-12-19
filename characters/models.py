@@ -71,3 +71,12 @@ class Content(models.Model):
         verbose_name = "Контент"
         verbose_name_plural = "Контент"
 
+class User(models.Model):
+  name = models.TextField("Имя")
+
+  class Meta:
+    verbose_name = "Пользователь"
+    verbose_name_plural = "Пользователи"
+
+  def str(self) -> str:
+    return self.name

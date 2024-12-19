@@ -1,11 +1,14 @@
 from rest_framework.viewsets import GenericViewSet
-from rest_framework import mixins, viewsets
+from rest_framework import viewsets
 from rest_framework import serializers
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.decorators import action
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 
 from characters.models import Team, Position, Skills, Content, ContentType, Character
-from characters.serializers import TeamSerializer, PositionSerializer, SkillsSerializer, ContentSerializer, ContentTypeSerializer, CharacterSerializer
+from characters.serializers import UserSerializer, TeamSerializer, PositionSerializer, SkillsSerializer, ContentSerializer, ContentTypeSerializer, CharacterSerializer
 
 from django.db.models import Avg, Count, Max, Min
 
@@ -155,3 +158,34 @@ class CharactersViewset(viewsets.ModelViewSet):
 
         return Response(serializer.data)
 
+class UserViewset(viewsets.ModelViewSet, GenericViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    @action(url_path="info", methods=["GET"], detail=False)
+    def get_info(self, request, *args, **kwargs):
+        data = {
+            "is_authenticated": request.user.is_authenticated
+        }
+        if request.user.is_authenticated:
+            data.update({
+                "is_superuser": request.user.is_superuser,
+                "username": request.user.username,
+                "user_id": request.user.id,
+            })
+        return Response(data)
+
+    @action(url_path="login", methods=["POST"], detail=False)
+    def login(self, request, *args, **kwargs):
+        username = request.data.get("user")
+        password = request.data.get("pass")
+
+        user = authenticate(request, username=username, password=password)
+        if user:
+            login(request, user)
+            return Response({"success": True})
+        return Response({"success": False, "error": "Invalid credentials"}, status=400)
+
+    @action(url_path="logout", methods=["GET"], detail=False)
+    def logout(self, request, *args, **kwargs):
+        logout(request)
+        return Response({"success": True})

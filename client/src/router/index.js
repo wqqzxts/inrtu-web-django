@@ -4,6 +4,7 @@ import TeamsVew from '@/views/TeamsView.vue'
 import PositionsVew from '@/views/PositionsView.vue'
 import SkillsView from '@/views/SkillsView.vue'
 import ContentTypesView from '@/views/ContentTypesView.vue'
+import LoginView from '@/views/LoginView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -38,6 +39,11 @@ const router = createRouter({
       path: "/content_type",
       name: "ContentTypesView.vue",
       component: ContentTypesView
+    },
+    {
+      path: "/users",
+      name: "LoginView.vue",
+      component: LoginView
     },
   ],
 })

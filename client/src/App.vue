@@ -4,6 +4,13 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import _ from "lodash";
 
+import { storeToRefs } from "pinia";
+import useUserStore from "@/stores/userStore";
+
+const userStore = useUserStore();
+const { isSuperUser, isAuthenticated, username, userId } =
+  storeToRefs(userStore);
+
 onBeforeMount(() => {
   axios.defaults.headers.common["X-CSRFToken"] = Cookies.get("csrftoken");
 });
@@ -81,6 +88,22 @@ onBeforeMount(() => {
             </li>
           </ul>
         </div>
+        <form class="d-flex">
+          <ul class="navbar-nav">
+            <div style="align-content: center;">
+              <li class="nav-item dropdown" style="margin-right: 50px">
+                <a>
+                  {{ username }}
+                </a>
+              </li>
+            </div>
+          </ul>
+          <router-link class="nav-link" to="/users">
+            <button class="btn btn-outline-info" type="button">
+              <i class="bi bi-person-fill"></i>
+            </button>
+          </router-link>
+        </form>
       </div>
     </nav>
     <router-view />
@@ -91,7 +114,7 @@ onBeforeMount(() => {
 .background-filler {
   border: solid 2px #7790b8;
   background-color: #e7eef9;
-  border-radius: 6px;  
+  border-radius: 6px;
 }
 
 .content-subitem {

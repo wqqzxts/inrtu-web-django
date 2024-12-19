@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
-from characters.models import Team, Position, Skills, Content, ContentType, Character
+from django.contrib.auth.models import User
 
+from characters.models import Team, Position, Skills, Content, ContentType, Character
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
@@ -31,18 +32,23 @@ class ContentSerializer(serializers.ModelSerializer):
 
 class CharacterSerializer(serializers.ModelSerializer):
     team = serializers.PrimaryKeyRelatedField(queryset=Team.objects.all())
-    # def create(self, validated_data): 
-    #     # когда в api создается сериалайзер, 
-    #     # то заполняется специальное поле сериалайзера которое называется context
-    #     # в него добавляется инфомрация по запросе, и доступна эта инфа
-    #     # через self.context['request'], в частности там есть информация о пользовате
-    #     if 'request' in self.context:
-    #         # заполняем validated_data который используется для создания сущности в БД
-    #         # данными из запроса
-    #         validated_data['user'] = self.context['request'].user
+    def create(self, validated_data): 
+        # когда в api создается сериалайзер, 
+        # то заполняется специальное поле сериалайзера которое называется context
+        # в него добавляется инфомрация по запросе, и доступна эта инфа
+        # через self.context['request'], в частности там есть информация о пользовате
+        if 'request' in self.context:
+            # заполняем validated_data который используется для создания сущности в БД
+            # данными из запроса
+            validated_data['user'] = self.context['request'].user
             
-    #     return super().create(validated_data)
+        return super().create(validated_data)
 
     class Meta:
         model = Character
         fields = "__all__"
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name']

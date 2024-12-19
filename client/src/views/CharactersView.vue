@@ -1,17 +1,41 @@
 <script setup>
-import { computed, onBeforeMount, ref } from "vue";
-import axios from "axios";
+import { computed, onBeforeMount, ref, watch } from "vue";
+import axios, { all } from "axios";
 import _ from "lodash";
+import { storeToRefs } from "pinia";
+import useUserStore from "@/stores/userStore";
+import Cookies from "js-cookie";
 
 const characters = ref([]);
 const teams = ref([]);
 const positions = ref([]);
 const skills = ref([]);
+const users = ref([]);
 const charactersPictureRefAdd = ref();
 const charactersPictureRefEdit = ref();
 const modalPictureRef = ref("");
 const characterAddImageURL = ref();
 const characterEditImageURL = ref();
+
+const selectedUser = ref(null);
+const filteredCharacters = ref([]);
+
+function filterCharactersByUser() {
+  if (selectedUser.value === null) {
+    filteredCharacters.value = characters.value;
+  } else if (selectedUser.value.user_id == userId.value && isSuperUser.value) {
+    filteredCharacters.value = characters.value;
+  } else {
+    filteredCharacters.value = characters.value.filter(
+      (character) => character.user === selectedUser.value.id
+    );
+  }
+}
+watch(selectedUser, filterCharactersByUser);
+
+const userStore = useUserStore();
+const {isSuperUser, isAuthenticated, username, userId } =
+  storeToRefs(userStore);
 
 const characterToAdd = ref({});
 const characterToEdit = ref({});
@@ -111,11 +135,22 @@ async function fetchCharacters() {
   characters.value = r.data;
 }
 
+async function fetchUsers() {
+  if (isSuperUser.value){
+    const r = await axios.get("/api/users/");
+    users.value = r.data;
+  }
+  return null;
+}
+
 onBeforeMount(async () => {
+  axios.defaults.headers.common["X-CSRFToken"] = Cookies.get("csrftoken");
   await fetchTeams();
   await fetchPositions();
   await fetchSkills();
   await fetchCharacters();
+  await fetchUsers();
+  await filterCharactersByUser();
 });
 </script>
 
@@ -211,12 +246,34 @@ onBeforeMount(async () => {
               </div>
             </div>
           </div>
+
+          <div v-if="isSuperUser" class="row custom-row background-filler m-1">
+            <div class="my-1 col-12 col-md">
+              <div class="form-floating add-subitem">
+                <select
+                  class="form-select custom-color"
+                  v-model="selectedUser"
+                  @change="filterCharactersByUser"
+                  required
+                >
+                  <option
+                    :value="t"
+                    v-for="t in users"
+                    v-bind:key="t.id"
+                  >
+                    {{ t.username }}
+                  </option>
+                </select>
+                <label for="floatingInput">Фильтр по пользователю</label>
+              </div>
+            </div>
+          </div>
         </form>
       </div>
 
       <div class="col m-1">
         <div
-          v-for="item in characters"
+          v-for="item in filteredCharacters"
           :key="item.id"
           class="row-auto content-item background-filler"
         >
@@ -285,7 +342,7 @@ onBeforeMount(async () => {
                   <div class="col">
                     <div class="col-auto">
                       <div class="form-floating">
-                        <select class="form-select" id="floatingSelect">
+                        <select class="form-select" id="floatingSelect" v-model="characterToEdit.team">
                           <option
                             selected
                             :value="t.id"
@@ -303,7 +360,7 @@ onBeforeMount(async () => {
                   <div class="col">
                     <div class="col-auto">
                       <div class="form-floating">
-                        <select class="form-select" id="floatingSelect">
+                        <select class="form-select" id="floatingSelect" v-model="characterToEdit.position">
                           <option
                             selected
                             :value="t.id"
@@ -321,7 +378,7 @@ onBeforeMount(async () => {
                   <div class="col">
                     <div class="col-auto">
                       <div class="form-floating">
-                        <select class="form-select" id="floatingSelect">
+                        <select class="form-select" id="floatingSelect" v-model="characterToEdit.skill">
                           <option
                             selected
                             :value="t.id"
