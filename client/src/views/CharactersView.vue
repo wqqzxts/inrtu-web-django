@@ -7,9 +7,11 @@ const characters = ref([]);
 const teams = ref([]);
 const positions = ref([]);
 const skills = ref([]);
-const charactersPictureRef = ref();
+const charactersPictureRefAdd = ref();
+const charactersPictureRefEdit = ref();
 const modalPictureRef = ref("");
 const characterAddImageURL = ref();
+const characterEditImageURL = ref();
 
 const characterToAdd = ref({});
 const characterToEdit = ref({});
@@ -29,7 +31,7 @@ const skillByID = computed(() => {
 async function onCharacterAdd() {
   const formData = new FormData();
 
-  formData.append("picture", charactersPictureRef.value.files[0]);
+  formData.append("picture", charactersPictureRefAdd.value.files[0]);
 
   formData.set("name", characterToAdd.value.name);
   formData.set("team", characterToAdd.value.team);
@@ -47,7 +49,13 @@ async function onCharacterAdd() {
 
 async function charactersAddPictureChange() {
   characterAddImageURL.value = URL.createObjectURL(
-    charactersPictureRef.value.files[0]
+    charactersPictureRefAdd.value.files[0]
+  );
+}
+
+async function charactersEditPictureChange() {
+  characterEditImageURL.value = URL.createObjectURL(
+    charactersPictureRefEdit.value.files[0]
   );
 }
 
@@ -67,7 +75,7 @@ async function onImageClick(picture) {
 async function onUpdateCharacter() {
   const formData = new FormData();
 
-  formData.append("picture", charactersPictureRef.value.files[0]);
+  formData.append("picture", charactersPictureRefEdit.value.files[0]);
 
   formData.set("name", characterToEdit.value.name);
   formData.set("team", characterToEdit.value.team);
@@ -177,7 +185,7 @@ onBeforeMount(async () => {
             <input
               class="form-control"
               type="file"
-              ref="charactersPictureRef"
+              ref="charactersPictureRefAdd"
               @change="charactersAddPictureChange"
               required
             />
@@ -326,8 +334,8 @@ onBeforeMount(async () => {
                     <input
                       class="form-control"
                       type="file"
-                      ref="charactersPictureRef"
-                      @change="charactersAddPictureChange"
+                      ref="charactersPictureRefEdit"
+                      @change="charactersEditPictureChange"
                       required
                     />
                   </div>

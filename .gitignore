@@ -10,3 +10,4 @@ node_modules
 .gitignore
 
 media/
+db.sqlite3
