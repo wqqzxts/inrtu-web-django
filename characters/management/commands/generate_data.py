@@ -1,33 +1,34 @@
 import random
 from faker import Faker
 from django.core.management.base import BaseCommand
-from characters.models import Character, Team, Position, Skills
+from django.apps import apps
 from django.contrib.auth.models import User
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
         fake = Faker(['ru_RU'])
 
-        # Получаем все команды, позиции и навыки из базы данных
-        teams = Team.objects.all()
-        positions = Position.objects.all()
-        skills = Skills.objects.all()
-        users = User.objects.all()  # If you want to associate characters with users
+        # Получаем модели через lazy loading
+        Content = apps.get_model('characters', 'Content')
+        ContentType = apps.get_model('characters', 'ContentType')
 
-        for _ in range(1000):  # Adjust the number of characters as needed
-            random_team = random.choice(teams) if teams else None
-            random_position = random.choice(positions) if positions else None
-            random_skill = random.choice(skills) if skills else None
+        # Получаем все типы контента и пользователей из базы данных
+        content_types = ContentType.objects.all()
+        users = User.objects.all()  # If you want to associate content with users
+
+        for _ in range(1000):  # Adjust the number of content instances as needed
+            random_content_type = random.choice(content_types) if content_types else None
             random_user = random.choice(users) if users else None
 
-            # Создание персонажа
-            Character.objects.create(
-                name=fake.name(),
-                team=random_team,
-                position=random_position,
-                skill=random_skill,
-                picture=fake.image_url(),  # Generate a random image URL or use a placeholder
+            # Создание контента
+            Content.objects.create(
+                type=random_content_type,
+                episode_name=fake.sentence(),
+                episode=random.randint(1, 50),  # Random episode number
+                volume=random.randint(1, 10),    # Random volume number
+                description=fake.text(),
+                picture=fake.image_url(),         # Generate a random image URL or use a placeholder
                 user=random_user
             )
 
-        self.stdout.write(self.style.SUCCESS('Successfully created fake characters.'))
+        self.stdout.write(self.style.SUCCESS('Successfully created fake content.'))

@@ -156,6 +156,7 @@ async function fetchUsers() {
 let isFetching = false;
 
 async function fetchAllData() {
+  axios.defaults.headers.common["X-CSRFToken"] = Cookies.get("csrftoken");
   if (!isFetching) {
     isFetching = true;
     await fetchStatistics();
@@ -272,7 +273,6 @@ onBeforeMount(fetchAllData);
                   class="form-select custom-color"
                   v-model="selectedUser"
                   @change="filterCharactersByUser"
-                  required
                 >
                   <option :value="t" v-for="t in users" v-bind:key="t.id">
                     {{ t.username }}

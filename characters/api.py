@@ -108,6 +108,14 @@ class ContentViewset(viewsets.ModelViewSet):
     queryset = Content.objects.all()
     serializer_class = ContentSerializer
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+            
+        if self.request.user.is_superuser:
+            return qs 
+            
+        return qs.filter(user=self.request.user)
+
     class StatsSerializer(serializers.Serializer):
         count = serializers.IntegerField()
         avg = serializers.FloatField()

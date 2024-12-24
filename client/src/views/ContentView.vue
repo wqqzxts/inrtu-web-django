@@ -1,15 +1,50 @@
 <script setup>
-import { computed, onBeforeMount, ref } from "vue";
-import axios from "axios";
+import { computed, onBeforeMount, ref, watch } from "vue";
+import axios, { all } from "axios";
 import _ from "lodash";
+import { storeToRefs } from "pinia";
+import useUserStore from "@/stores/userStore";
+import Cookies from "js-cookie";
 
 const content = ref([]);
 const content_type = ref([]);
+const users = ref([]);
 const contentPictureRefAdd = ref();
 const contentPictureRefEdit = ref();
 const modalPictureRef = ref("");
 const contentAddImageURL = ref();
 const contentEditImageURL = ref();
+
+const selectedUser = ref(null);
+const filteredContent = ref([]);
+
+function filterContentByUser() {
+  if (selectedUser.value === null) {
+    filteredContent.value = content.value;
+  } else if (selectedUser.value.user_id == userId.value && isSuperUser.value) {
+    filteredContent.value = content.value;
+  } else {
+    filteredContent.value = content.value.filter(
+      (contentItem) => contentItem.user === selectedUser.value.id
+    );
+  }
+}
+
+watch(selectedUser, filterContentByUser);
+
+const statistics = ref({});
+async function fetchStatistics() {
+  try {
+    const r = await axios.get("/api/content/stats/");
+    statistics.value = r.data;
+  } catch (error) {
+    console.error("Ошибка при получении статистики:", error);
+  }
+}
+
+const userStore = useUserStore();
+const { isSuperUser, isAuthenticated, username, userId } =
+  storeToRefs(userStore);
 
 const contentToAdd = ref({});
 const contentToEdit = ref({});
@@ -94,10 +129,30 @@ async function fetchContent() {
   content.value = r.data;
 }
 
-onBeforeMount(async () => {
-  await fetchContent();
-  await fetchContentTypes();
-});
+async function fetchUsers() {
+  if (isSuperUser.value) {
+    const r = await axios.get("/api/users/");
+    users.value = r.data;
+  }
+  return null;
+}
+
+let isFetching = false;
+
+async function fetchAllData() {
+  axios.defaults.headers.common["X-CSRFToken"] = Cookies.get("csrftoken");
+  if (!isFetching) {
+    isFetching = true;
+    await fetchStatistics();
+    await fetchContentTypes();
+    await fetchContent();
+    await fetchUsers();
+    await filterContentByUser();
+    isFetching = false;
+  }
+}
+
+onBeforeMount(fetchAllData);
 </script>
 
 <template>
@@ -195,6 +250,56 @@ onBeforeMount(async () => {
                 <button class="btn btn-outline-success btn-lg">
                   <i class="bi bi-database-fill-add"></i>
                 </button>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="isSuperUser" class="row custom-row background-filler m-1">
+            <div class="my-1 col-12 col-md">
+              <div class="form-floating add-subitem">
+                <select
+                  class="form-select custom-color"
+                  v-model="selectedUser"
+                  @change="filterContentByUser"
+                >
+                  <option :value="t" v-for="t in users" v-bind:key="t.id">
+                    {{ t.username }}
+                  </option>
+                </select>
+                <label for="floatingInput">Фильтр по пользователю</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row custom-row background-filler m-1">
+            <div class="my-1 col-12 col-md">
+              <div class="row">
+                <div class="col-12">
+                  <h5 class="text-center" style="margin-bottom: 20px">
+                    <strong>Статистика всего контента</strong>
+                  </h5>
+                </div>
+                <div class="col-12 col-md-6">
+                  <div class="statistic-item">
+                    <strong>Всего:&nbsp;</strong> {{ statistics.count }}
+                  </div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <div class="statistic-item">
+                    <strong>Среднее количество:&nbsp;</strong>
+                    {{ statistics.avg }}
+                  </div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <div class="statistic-item">
+                    <strong>Максимум:&nbsp;</strong> {{ statistics.max }}
+                  </div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <div class="statistic-item">
+                    <strong>Минимум:&nbsp;</strong> {{ statistics.min }}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -453,6 +558,15 @@ onBeforeMount(async () => {
   align-content: center;
 }
 
+.statistic-item {
+  padding: 10px;
+  background-color: #fefef9;
+  border-radius: 5px;
+  margin-bottom: 10px; 
+  display: flex;
+  justify-content: center;
+}
+
 .content-subitem {
   background-color: #fefef9;
   border-radius: 6px;
@@ -460,18 +574,19 @@ onBeforeMount(async () => {
   padding: 12.5px;
 }
 
-.add-subitem{
+.add-subitem {
   border: solid 2px #7790b8;
   border-radius: 6px;
 }
 
-.custom-color{
+.custom-color {
   background-color: #fefef9;
 }
 
 .background-filler {
   background-color: #e7eef9;
   border-radius: 6px;
+  border: solid 2px #7790b8;
   padding: 5px;
 }
 
