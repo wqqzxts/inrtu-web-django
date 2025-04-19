@@ -1,4 +1,4 @@
 # INRTU [Irkutsk National Technical Research University]
 ## 3.1
 ## Subject: Web-Development
-### Description: ...
+### Description: Vue + Django Rest Framework
