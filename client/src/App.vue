@@ -22,7 +22,7 @@ onBeforeMount(() => {
       <div class="container-fluid">
         <a class="navbar-brand">
           <img
-            src="Z:\Qzxts\Education\.INRTU\(Code) WEB-Программирование\ВторойСеместр\templates\Site-logo.png"
+            src="..\templates\Site-logo.png"
             alt="Меню"
             width="135"
             height="30"
