@@ -66,7 +66,7 @@ onBeforeMount(() => {
                 </li>
                 <li>
                   <router-link class="dropdown-item" to="/positions"
-                    >Роли</router-link
+                    >Роли персонажей</router-link
                   >
                 </li>
                 <li>
