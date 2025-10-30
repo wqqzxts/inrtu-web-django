@@ -13,8 +13,10 @@
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "js-cookie": "^3.0.5",
+    "localtunnel": "^2.0.2",
     "lodash": "^4.17.21",
     "pinia": "^2.2.6",
+    "pm2": "^6.0.13",
     "vue": "^3.5.12",
     "vue-router": "^4.4.5"
   },
