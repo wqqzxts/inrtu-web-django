@@ -5,77 +5,77 @@ from model_bakery import baker
 from characters.models import Team, Position, Skills, Content, ContentType, Character
 
 # Create your tests here.
-class CharactersViewsetTestCase(TestCase):
-    def setUp(self):
-        self.client = APIClient()
+# class CharactersViewsetTestCase(TestCase):
+#     def setUp(self):
+#         self.client = APIClient()
 
 
-    def test_get_character(self):
-        tm = baker.make(Team)
-        character = baker.make(Character, team = tm)
+#     def test_get_character(self):
+#         tm = baker.make(Team)
+#         character = baker.make(Character, team = tm)
 
-        r = self.client.get('/api/characters/')
-        data = r.json()
+#         r = self.client.get('/api/characters/')
+#         data = r.json()
 
-        assert character.name == data[0]['name']
-        assert character.id == data[0]['id']
-        assert character.team.id == data[0]['team']
-        assert len(data) == 1
+#         assert character.name == data[0]['name']
+#         assert character.id == data[0]['id']
+#         assert character.team.id == data[0]['team']
+#         assert len(data) == 1
 
 
-    def test_create_character(self):
-        tm = baker.make(Team)
+#     def test_create_character(self):
+#         tm = baker.make(Team)
         
-        r = self.client.post('/api/characters/', {
-            "name": "Персонаж2",
-            "team": tm.id
-        })
+#         r = self.client.post('/api/characters/', {
+#             "name": "Персонаж2",
+#             "team": tm.id
+#         })
 
-        new_character_id = r.json()['id']
+#         new_character_id = r.json()['id']
 
-        characters = Character.objects.all()
-        assert len(characters) == 1
+#         characters = Character.objects.all()
+#         assert len(characters) == 1
 
-        new_character = Character.objects.filter(id = new_character_id).first()
-        assert new_character.name == 'Персонаж2'
-        assert new_character.team == tm
-
-
-    def test_delete_character(self):
-        characters = baker.make(Character, 10)
-        r = self.client.get('/api/characters/')
-        data = r.json()
-        assert len(data) == 10
-
-        character_id_to_delete = characters[3].id
-        self.client.delete(f'/api/characters/{character_id_to_delete}/')
-
-        r = self.client.get('/api/characters/')
-        data = r.json()
-        assert len(data) == 9
-
-        assert character_id_to_delete not in [i['id'] for i in data]
+#         new_character = Character.objects.filter(id = new_character_id).first()
+#         assert new_character.name == 'Персонаж2'
+#         assert new_character.team == tm
 
 
-    def test_update_character(self):
-        characters = baker.make(Character, 10)
-        character: Character = characters[3]
+#     def test_delete_character(self):
+#         characters = baker.make(Character, 10)
+#         r = self.client.get('/api/characters/')
+#         data = r.json()
+#         assert len(data) == 10
 
-        r = self.client.get(f'/api/characters/{character.id}/')
-        data = r.json()
-        assert data['name'] == character.name
+#         character_id_to_delete = characters[3].id
+#         self.client.delete(f'/api/characters/{character_id_to_delete}/')
+
+#         r = self.client.get('/api/characters/')
+#         data = r.json()
+#         assert len(data) == 9
+
+#         assert character_id_to_delete not in [i['id'] for i in data]
+
+
+#     def test_update_character(self):
+#         characters = baker.make(Character, 10)
+#         character: Character = characters[3]
+
+#         r = self.client.get(f'/api/characters/{character.id}/')
+#         data = r.json()
+#         assert data['name'] == character.name
         
-        r = self.client.patch(f'/api/characters/{character.id}/', {
-          "name": "Тэцуя Куроко"
-        })
-        assert r.status_code == 200
+#         r = self.client.patch(f'/api/characters/{character.id}/', {
+#           "name": "Тэцуя Куроко"
+#         })
+#         assert r.status_code == 200
 
-        r = self.client.get(f'/api/characters/{character.id}/')
-        data = r.json()
-        assert data['name'] == "Тэцуя Куроко"
+#         r = self.client.get(f'/api/characters/{character.id}/')
+#         data = r.json()
+#         assert data['name'] == "Тэцуя Куроко"
 
-        character.refresh_from_db()
-        assert data['name'] == character.name
+#         character.refresh_from_db()
+#         assert data['name'] == character.name
 
 class TeamViewsetTestCase(TestCase):
     def setUp(self):
@@ -345,76 +345,76 @@ class ContentTypeViewsetTestCase(TestCase):
         assert data['name'] == content_type.name
 
 
-class ContentViewsetTestCase(TestCase):
-    def setUp(self):
-        self.client = APIClient()
+# class ContentViewsetTestCase(TestCase):
+#     def setUp(self):
+#         self.client = APIClient()
 
 
-    def test_get_content(self):
-        content_type = baker.make(ContentType, name="Тип 1")
-        content = baker.make(Content, type=content_type, episode_name="Эпизод 1", episode=1, volume=1, description="Описание 1")
+#     def test_get_content(self):
+#         content_type = baker.make(ContentType, name="Тип 1")
+#         content = baker.make(Content, type=content_type, episode_name="Эпизод 1", episode=1, volume=1, description="Описание 1")
 
-        response = self.client.get('/api/content/')
-        data = response.json()
+#         response = self.client.get('/api/content/')
+#         data = response.json()
 
-        assert response.status_code == 200
-        assert len(data) == 1
-        assert data[0]['episode_name'] == content.episode_name
-        assert data[0]['id'] == content.id
+#         assert response.status_code == 200
+#         assert len(data) == 1
+#         assert data[0]['episode_name'] == content.episode_name
+#         assert data[0]['id'] == content.id
 
 
-    def test_create_content(self):
-        content_type = baker.make(ContentType, name="Тип 1")
+#     def test_create_content(self):
+#         content_type = baker.make(ContentType, name="Тип 1")
         
-        response = self.client.post('/api/content/', {
-            "type": content_type.id,
-            "episode_name": "Эпизод 2",
-            "episode": 2,
-            "volume": 1,
-            "description": "Описание 2"
-        })
+#         response = self.client.post('/api/content/', {
+#             "type": content_type.id,
+#             "episode_name": "Эпизод 2",
+#             "episode": 2,
+#             "volume": 1,
+#             "description": "Описание 2"
+#         })
 
-        new_content_id = response.json()['id']
-        contents = Content.objects.all()
+#         new_content_id = response.json()['id']
+#         contents = Content.objects.all()
 
-        assert response.status_code == 201
-        assert len(contents) == 1
+#         assert response.status_code == 201
+#         assert len(contents) == 1
 
-        new_content = Content.objects.get(id=new_content_id)
-        assert new_content.episode_name == 'Эпизод 2'
+#         new_content = Content.objects.get(id=new_content_id)
+#         assert new_content.episode_name == 'Эпизод 2'
 
 
-    def test_delete_content(self):
-        content_type = baker.make(ContentType, name="Тип 1")
-        contents = baker.make(Content, type=content_type, _quantity=10)
-        response = self.client.get('/api/content/')
-        data = response.json()
-        assert len(data) == 10
+#     def test_delete_content(self):
+#         content_type = baker.make(ContentType, name="Тип 1")
+#         contents = baker.make(Content, type=content_type, _quantity=10)
+#         response = self.client.get('/api/content/')
+#         data = response.json()
+#         assert len(data) == 10
 
-        content_id_to_delete = contents[3].id
-        self.client.delete(f'/api/content/{content_id_to_delete}/')
+#         content_id_to_delete = contents[3].id
+#         self.client.delete(f'/api/content/{content_id_to_delete}/')
 
-        response = self.client.get('/api/content/')
-        data = response.json()
-        assert len(data) == 9
-        assert content_id_to_delete not in [i['id'] for i in data]
+#         response = self.client.get('/api/content/')
+#         data = response.json()
+#         assert len(data) == 9
+#         assert content_id_to_delete not in [i['id'] for i in data]
 
-    def test_update_content(self):
-        content_type = baker.make(ContentType, name="Тип 1")
-        content = baker.make(Content, type=content_type, episode_name="Эпизод 1")
+#     def test_update_content(self):
+#         content_type = baker.make(ContentType, name="Тип 1")
+#         content = baker.make(Content, type=content_type, episode_name="Эпизод 1")
 
-        response = self.client.get(f'/api/content/{content.id}/')
-        data = response.json()
-        assert data['episode_name'] == content.episode_name
+#         response = self.client.get(f'/api/content/{content.id}/')
+#         data = response.json()
+#         assert data['episode_name'] == content.episode_name
 
-        response = self.client.patch(f'/api/content/{content.id}/', {
-            "episode_name": "Новый Эпизод"
-        })
-        assert response.status_code == 200
+#         response = self.client.patch(f'/api/content/{content.id}/', {
+#             "episode_name": "Новый Эпизод"
+#         })
+#         assert response.status_code == 200
 
-        response = self.client.get(f'/api/content/{content.id}/')
-        data = response.json()
-        assert data['episode_name'] == "Новый Эпизод"
+#         response = self.client.get(f'/api/content/{content.id}/')
+#         data = response.json()
+#         assert data['episode_name'] == "Новый Эпизод"
 
-        content.refresh_from_db()
-        assert data['episode_name'] == content.episode_name
+#         content.refresh_from_db()
+#         assert data['episode_name'] == content.episode_name

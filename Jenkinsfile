@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    stage('Branch Vailidation') {
+        script {
+            echo 'Not yet implemented'
+        }
+    }
     stage('Build') {
         parallel {
             stage('Backend') {
@@ -29,7 +34,12 @@ pipeline {
     }
     stage('Test') {
         steps {
-            echo "Running tests ..."            
+            echo "Running tests ..."
+            bat '''
+                conda activate base
+                conda activate inrtu-web-django
+                pytest
+            '''
         }
     }
     stage('Deploy') {
@@ -37,19 +47,21 @@ pipeline {
             stage('Backend') {
                 steps {
                     echo "Deploy for backend ..."
-                    bat ```
-                        conda activate inrtu-web-django
-                        python manage.py runserver
-                    ```
+                    bat 'Backend started'
+                    // bat '''
+                    //     conda activate inrtu-web-django
+                    //     python manage.py runserver
+                    // '''
                 }
             }
             stage('Frontend') {
                 steps {
                     echo "Deploy for frontend ..."
-                    bat ```
-                        cd client
-                        npm run dev
-                    ```
+                    bat 'Fronted started'
+                    // bat '''
+                    //     cd client
+                    //     npm run dev
+                    // '''
                 }
             }
         }
