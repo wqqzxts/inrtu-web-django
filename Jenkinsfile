@@ -43,7 +43,7 @@ pipeline {
                 stage('Backend') {
                     steps {
                         echo "Deploy for backend ..."
-                        bat 'Backend started'
+                        echo 'Backend started'
                         // bat '''
                         //     conda activate inrtu-web-django
                         //     python manage.py runserver
@@ -53,7 +53,7 @@ pipeline {
                 stage('Frontend') {
                     steps {
                         echo "Deploy for frontend ..."
-                        bat 'Fronted started'
+                        echo 'Fronted started'
                         // bat '''
                         //     cd client
                         //     npm run dev
