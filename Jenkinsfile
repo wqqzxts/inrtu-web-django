@@ -29,7 +29,9 @@ pipeline {
         stage('Test') {
             steps {
                 echo "Running tests ..."
-                bat 'conda run -n inrtu-web-django python pytest.ini'
+                bat '''
+                    cd backend
+                    conda run -n inrtu-web-django python manage.py test characters.tests'''
             }
         }
         stage('Deploy') {
