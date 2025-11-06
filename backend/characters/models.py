@@ -72,8 +72,8 @@ class Content(models.Model):
         verbose_name_plural = "Контент"
 
 class User(models.Model):
-  name = models.TextField("Имя")
-  surname = models.TextField("Фамилия")
+  name = models.TextField("Полное имя")
+  # surname = models.TextField("Фамилия")
 
   class Meta:
     verbose_name = "Пользователь"
