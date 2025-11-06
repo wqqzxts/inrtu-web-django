@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent any    
     
     stages {
         stage('Build') {
@@ -8,12 +8,10 @@ pipeline {
                     steps {
                         echo "Build for backend ..."
                         bat '''
-                            conda activate base
-                            conda env create -f enironment.yml
-                            conda activate inrtu-web-django
-
-                            python manage.py makemigrations
-                            python manage.py migrate                        
+                            cd backend
+                            conda env create -f enironment.yml                                                        
+                            conda run -n inrtu-web-django python manage.py makemigrations
+                            conda run -n inrtu-web-django python manage.py migrate
                         '''
                     }
                 }
@@ -21,21 +19,17 @@ pipeline {
                     steps {
                         echo "Build for frontend ..."
                         bat '''
-                            cd client
-                            npm install                        
+                            cd frontend
+                            npm i                                           
                         '''
                     }
                 }
             }
-    }
+        }
         stage('Test') {
             steps {
                 echo "Running tests ..."
-                bat '''
-                    conda activate base
-                    conda activate inrtu-web-django
-                    pytest
-                '''
+                bat 'conda run -n inrtu-web-django python pytest'
             }
         }
         stage('Deploy') {
