@@ -35,14 +35,17 @@ pipeline {
             }
         }
         stage('Deploy') {
+            when { 
+                branch = 'main'
+            }
             parallel {
                 stage('Backend') {
                     steps {
                         echo "Deploy for backend ..."
                         echo 'Backend started'
                         // bat '''
-                        //     conda activate inrtu-web-django
-                        //     python manage.py runserver
+                        //  conda run -n inrtu-web-django python manage.py runserver
+                        // 
                         // '''
                     }
                 }
@@ -51,7 +54,7 @@ pipeline {
                         echo "Deploy for frontend ..."
                         echo 'Fronted started'
                         // bat '''
-                        //     cd client
+                        //     cd frontend
                         //     npm run dev
                         // '''
                     }
