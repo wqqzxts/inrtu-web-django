@@ -9,7 +9,7 @@ pipeline {
                         echo "Build for backend ..."
                         bat '''
                             cd backend
-                            conda env create -f enironment.yml                                                        
+                            conda env create -f environment.yml                                                        
                             conda run -n inrtu-web-django python manage.py makemigrations
                             conda run -n inrtu-web-django python manage.py migrate
                         '''
