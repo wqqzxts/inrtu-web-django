@@ -1,0 +1,5 @@
+from app.settings import *
+import os
+
+DEBUG = False
+ALLOWED_HOSTS = ["*"]

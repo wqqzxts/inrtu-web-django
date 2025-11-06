@@ -5,6 +5,8 @@
 app/__pycache__/
 characters/__pycache__/
 characters/migrations/__pycache__/
+local_settings.py
+*.local.py
 
 node_modules
 .gitignore
