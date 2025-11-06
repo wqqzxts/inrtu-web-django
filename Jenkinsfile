@@ -29,7 +29,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo "Running tests ..."
-                bat 'conda run -n inrtu-web-django python pytest'
+                bat 'conda run -n inrtu-web-django python pytest.ini'
             }
         }
         stage('Deploy') {
