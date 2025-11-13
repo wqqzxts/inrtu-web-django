@@ -1,6 +1,7 @@
 .conda/
 .vscode/
 .pytest_cache/
+.venv/
 
 app/__pycache__/
 characters/__pycache__/
@@ -9,7 +10,9 @@ local_settings.py
 *.local.py
 
 node_modules
-.gitignore
 
 media/
 db.sqlite3
+staticfiles/
+dist/
+
