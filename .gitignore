@@ -3,6 +3,7 @@
 .pytest_cache/
 .venv/
 
+__pycache__/
 app/__pycache__/
 characters/__pycache__/
 characters/migrations/__pycache__/
