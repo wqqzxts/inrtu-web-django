@@ -3,7 +3,7 @@ networks:
 
 services:
   nginx:
-    image: nginx:alpine-stable
+    image: nginx:alpine
     container_name: nginx-proxy
     ports:
       - "80:80"
