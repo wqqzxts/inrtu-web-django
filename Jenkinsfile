@@ -44,8 +44,8 @@ pipeline {
                     docker compose up -d --build
                     sleep 30
     
-                    docker exec django-server poetry python manage.py makemigrations
-                    docker exec django-server poetry python manage.py migrate
+                    docker exec django-server poetry run python manage.py makemigrations
+                    docker exec django-server poetry run python manage.py migrate
                 '''
             }
         }
