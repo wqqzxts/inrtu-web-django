@@ -1,22 +1,31 @@
+[project]
+name = "inrtu-web-django"
+version = "1.0.0"
+description = "web app based on django and vue.js implemented during INRTU studying"
+authors = [
+    {name = "Timur Semennikov",email = "wqqzxts@gmail.com"}
+]
+license = {text = "MIT"}
+readme = "../README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "django (==5.1.1)",
+    "djangorestframework (==3.15.2)",
+    "pillow (==12.0.0)",
+    "uvicorn (==0.38.0)"
+]
+
+[dependency-groups]
+dev = [
+    "pytest-django (==4.9.0)",
+    "model-bakery (==1.20.0)",
+    "faker (==13.1.0)"
+]
+
 [tool.poetry]
-name = "inrtu-web-django-server"
-version = "0.1.0"
-description = "INRTU Django server"
-authors = ["wqqzxts@gmail.com"]
-license = "MIT"
+package-mode = false
 
-[tool.poetry.dependencies]
-python = ">=3.12"
-django = "5.1.1"
-djangorestframework = "3.15.2"
-pytest-django = "4.9.0"
-model-bakery = "1.20.0"
-pillow = "12.0.0"
-uvicorn = "0.38.0"
-
-[tool.poetry.group.dev.dependencies]
-faker = "13.1.0"
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
