@@ -21,6 +21,8 @@ services:
     container_name: django-server
     networks:
       - dev
+    expose:
+      - "8000"
 
   frontend:
     build:
@@ -28,3 +30,5 @@ services:
     container_name: vue-server
     networks:
       - dev
+    expose:
+      - "3000"
