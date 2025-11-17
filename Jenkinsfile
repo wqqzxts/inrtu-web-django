@@ -40,6 +40,7 @@ pipeline {
             steps {
             echo "Docker compose deploy"
                 sh '''
+                    ls -la nginx.conf || echo nginx.conf not found
                     docker compose down || true
                     docker compose up -d --build
                     sleep 30
