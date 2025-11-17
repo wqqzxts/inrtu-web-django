@@ -6,22 +6,18 @@ pipeline {
             parallel {
                 stage('Backend') {
                     steps {
-                        echo "Build for backend ..."
-                        bat '''
-                            cd backend
-                            conda env create -f environment.yml                                                        
-                            conda run -n inrtu-web-django python manage.py makemigrations
-                            conda run -n inrtu-web-django python manage.py migrate
-                        '''
+                        echo "Building backend docker"
+                        dir('backend') {
+                            sh 'docker build -t django-server .'
+                        }
                     }
                 }
                 stage('Frontend') {
                     steps {
-                        echo "Build for frontend ..."
-                        bat '''
-                            cd frontend
-                            npm i                                           
-                        '''
+                        echo "Building frontend docker"
+                        dir('frontend') {
+                            sh 'docker build -t vue-server .'
+                        }
                     }
                 }
             }
@@ -29,52 +25,44 @@ pipeline {
         stage('Test') {
             steps {
                 echo "Running tests ..."
-                bat '''
-                    cd backend
-                    conda run -n inrtu-web-django python manage.py test characters.tests'''
+                sh '''
+                    docker run --rm \
+                    -e DJANGO_SETTINGS_MODULE=app.settings \
+                    django-server \
+                    poetry run python manage.py test characters.tests
+                '''
             }
         }
         stage('Deploy') {
             when { 
                 branch 'main'
             }
-            parallel {
-                stage('Backend') {
-                    steps {
-                        echo "Deploy for backend ..."
-                        echo 'Backend started'
-                        // bat '''
-                        //  conda run -n inrtu-web-django python manage.py runserver
-                        // 
-                        // '''
-                    }
-                }
-                stage('Frontend') {
-                    steps {
-                        echo "Deploy for frontend ..."
-                        echo 'Fronted started'
-                        // bat '''
-                        //     cd frontend
-                        //     npm run dev
-                        // '''
-                    }
-                }
+            steps {
+            echo "Docker compose deploy"
+                sh '''
+                    docker-compose down || true
+                    docker-compose up -d --build
+                    sleep 30
+    
+                    docker exec django-server poetry python manage.py makemigrations
+                    docker exec django-server poetry python manage.py migrate
+                '''
             }
         }
     }
 
     post {
         always {
-                echo "Pipiline finished"
-            }
-            success {
-                echo "Pipiline success"
-            }
-            failure {
-                echo "Pipiline failure"
-            }
-            aborted {
-                echo "Pipeline aborted"
-            }
+             echo "Pipeline finished"
+        }
+        success {
+            echo "Pipeline success"
+        }
+        failure {
+            echo "Pipeline failure"
+        }
+        aborted {
+            echo "Pipeline aborted"
+        }
     }
 }

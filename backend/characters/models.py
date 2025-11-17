@@ -73,7 +73,7 @@ class Content(models.Model):
 
 class User(models.Model):
   name = models.TextField("Полное имя")
-  # surname = models.TextField("Фамилия")
+  surname = models.TextField("Фамилия")
 
   class Meta:
     verbose_name = "Пользователь"
