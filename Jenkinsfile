@@ -40,8 +40,8 @@ pipeline {
             steps {
             echo "Docker compose deploy"
                 sh '''
-                    docker-compose down || true
-                    docker-compose up -d --build
+                    docker compose down || true
+                    docker compose up -d --build
                     sleep 30
     
                     docker exec django-server poetry python manage.py makemigrations
