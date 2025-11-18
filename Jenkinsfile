@@ -13,9 +13,7 @@ pipeline {
                 echo "Running tests ..."
                 dir('backend') {
                     sh '''
-                        docker run --rm \
-                        -e DJANGO_SETTINGS_MODULE=app.settings \
-                        backend \
+                        docker compose run --rm backend
                         poetry run python manage.py test characters.tests
                     '''
                 }
