@@ -3,23 +3,9 @@ pipeline {
     
     stages {
         stage('Build') {
-            parallel {
-                stage('Backend') {
-                    steps {
-                        echo "Building backend docker"
-                        dir('backend') {
-                            sh 'docker build -t django-server'
-                        }
-                    }
-                }
-                stage('Frontend') {
-                    steps {
-                        echo "Building frontend docker"
-                        dir('frontend') {
-                            sh 'docker build'
-                        }
-                    }
-                }
+            steps {
+                echo "Building images"
+                sh 'docker compose build'
             }
         }
         stage('Test') {
@@ -41,7 +27,7 @@ pipeline {
             echo "Docker compose deploy"
                 sh '''
                     docker compose down 
-                    docker compose up -d --build
+                    docker compose up -d
                 '''
             }
         }
