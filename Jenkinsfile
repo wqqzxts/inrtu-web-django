@@ -11,12 +11,14 @@ pipeline {
         stage('Test') {
             steps {
                 echo "Running tests ..."
-                sh '''
-                    docker run --rm \
-                    -e DJANGO_SETTINGS_MODULE=app.settings \
-                    django-server \
-                    poetry run python manage.py test characters.tests
-                '''
+                dir(backend) {
+                    sh '''
+                        docker run -rm \
+                        -e DJANGO_SETTINGS_MODULE=app.settings \
+                        backend \
+                        poetry run python manage.py test characters.tests
+                    '''
+                }
             }
         }
         stage('Deploy') {
