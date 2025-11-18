@@ -8,7 +8,7 @@ pipeline {
                     steps {
                         echo "Building backend docker"
                         dir('backend') {
-                            sh 'docker build -t django-server .'
+                            sh 'docker build -t django-server'
                         }
                     }
                 }
@@ -16,7 +16,7 @@ pipeline {
                     steps {
                         echo "Building frontend docker"
                         dir('frontend') {
-                            sh 'docker build -t vue-server .'
+                            sh 'docker build'
                         }
                     }
                 }
@@ -40,13 +40,8 @@ pipeline {
             steps {
             echo "Docker compose deploy"
                 sh '''
-                    ls -la nginx.conf || echo nginx.conf not found
-                    docker compose down || true
+                    docker compose down 
                     docker compose up -d --build
-                    sleep 30
-    
-                    docker exec django-server poetry run python manage.py makemigrations
-                    docker exec django-server poetry run python manage.py migrate
                 '''
             }
         }
