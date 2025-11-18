@@ -13,7 +13,7 @@ pipeline {
                 echo "Running tests ..."
                 dir('backend') {
                     sh '''
-                        docker compose run --rm backend
+                        docker compose run --rm backend \
                         poetry run python manage.py test characters.tests
                     '''
                 }
