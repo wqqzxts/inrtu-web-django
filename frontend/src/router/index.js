@@ -21,27 +21,27 @@ const router = createRouter({
       component: ContentView
     },
     {
-      path: "/teams",
+      path: "/teams/",
       name: "TeamsView.vue",
       component: TeamsVew
     },
     {
-      path: "/positions",
+      path: "/positions/",
       name: "PositionsView.vue",
       component: PositionsVew
     },
     {
-      path: "/skills",
+      path: "/skills/",
       name: "SkillsView.vue",
       component: SkillsView
     },
     {
-      path: "/content_type",
+      path: "/content_type/",
       name: "ContentTypesView.vue",
       component: ContentTypesView
     },
     {
-      path: "/users",
+      path: "/users/",
       name: "LoginView.vue",
       component: LoginView
     },

@@ -2,7 +2,8 @@ FROM node:24.11-alpine AS build
 
 WORKDIR /app
 
-COPY package.json package-lock.json /app/
+COPY package.json .
+COPY package-lock.json .
 
 RUN npm install
 
@@ -13,8 +14,8 @@ RUN npm run build
 FROM nginx:1.29.3-alpine
 
 COPY --from=build /app/dist/ /usr/share/nginx/html
-COPY --from=build /app/nginx.conf /etc/nginx/nginx.conf
+COPY nginx_static.conf /etc/nginx/nginx.conf
 
 EXPOSE 3000
 
-CMD ["nginx", "-g", "daemon off"]
+CMD ["nginx", "-g", "daemon off;"]

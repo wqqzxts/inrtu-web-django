@@ -4,13 +4,16 @@ WORKDIR /app
 
 RUN pip install poetry
 
-COPY pyproject.toml poetry.lock* /app/
+COPY pyproject.toml .
+COPY poetry.lock .
 
 RUN poetry config virtualenvs.create false
 RUN poetry install --without dev --no-root
 
 COPY . .
 
+RUN poetry run python manage.py makemigrations
+RUN poetry run python manage.py migrate
 RUN poetry run python manage.py collectstatic --noinput
 
 EXPOSE 8000

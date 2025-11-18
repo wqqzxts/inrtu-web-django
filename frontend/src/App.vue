@@ -80,7 +80,7 @@ onBeforeMount(() => {
                   >
                 </li>
                 <li>
-                  <a class="dropdown-item" href="/admin" target="_blank"
+                  <a class="dropdown-item" href="/admin/" target="_blank"
                     >Админка</a
                   >
                 </li>
