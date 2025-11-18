@@ -11,7 +11,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo "Running tests ..."
-                dir(backend) {
+                dir('backend') {
                     sh '''
                         docker run -rm \
                         -e DJANGO_SETTINGS_MODULE=app.settings \
