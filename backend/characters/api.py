@@ -6,11 +6,13 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from rest_framework.views import APIView
 
 from characters.models import Team, Position, Skills, Content, ContentType, Character
 from characters.serializers import UserSerializer, TeamSerializer, PositionSerializer, SkillsSerializer, ContentSerializer, ContentTypeSerializer, CharacterSerializer
 
 from django.db.models import Avg, Count, Max, Min
+from django.http import JsonResponse
 
 class TeamViewset(viewsets.ModelViewSet):
     queryset = Team.objects.all()
@@ -197,3 +199,8 @@ class UserViewset(viewsets.ModelViewSet, GenericViewSet):
     def logout(self, request, *args, **kwargs):
         logout(request)
         return Response({"success": True})
+
+class HealthViewset(APIVie):
+    def get(self, request):
+        time.sleep(10)
+        return JsonResponse({"status": "healthy", "service": "backend"})

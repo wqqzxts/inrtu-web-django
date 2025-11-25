@@ -22,7 +22,7 @@ from django.conf.urls.static import static
 from characters import views
 
 from rest_framework.routers import DefaultRouter
-from characters.api import UserViewset, TeamViewset, PositionViewset, SkillsViewset, ContentTypeViewset, ContentViewset, CharactersViewset
+from characters.api import UserViewset, TeamViewset, PositionViewset, SkillsViewset, ContentTypeViewset, ContentViewset, CharactersViewset, HealthViewset
 
 router = DefaultRouter()
 router.register("characters", CharactersViewset, basename="characters")
@@ -32,6 +32,7 @@ router.register("skills", SkillsViewset, basename="skills")
 router.register("content-types", ContentTypeViewset, basename="content-types")
 router.register("content", ContentViewset, basename="content")
 router.register("users", UserViewset, basename="users")
+router.register("healt", HealthViewset, basename="health")
 
 
 urlpatterns = [
