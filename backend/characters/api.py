@@ -1,3 +1,5 @@
+import time
+
 from rest_framework.viewsets import GenericViewSet
 from rest_framework import viewsets
 from rest_framework import serializers
@@ -12,7 +14,6 @@ from characters.models import Team, Position, Skills, Content, ContentType, Char
 from characters.serializers import UserSerializer, TeamSerializer, PositionSerializer, SkillsSerializer, ContentSerializer, ContentTypeSerializer, CharacterSerializer
 
 from django.db.models import Avg, Count, Max, Min
-from django.http import JsonResponse
 
 class TeamViewset(viewsets.ModelViewSet):
     queryset = Team.objects.all()
@@ -200,7 +201,10 @@ class UserViewset(viewsets.ModelViewSet, GenericViewSet):
         logout(request)
         return Response({"success": True})
 
-class HealthViewset(APIVie):
-    def get(self, request):
+class HealthViewset(viewsets.ViewSet):
+    def list(self, request):
         time.sleep(10)
-        return JsonResponse({"status": "healthy", "service": "backend"})
+        return Response({
+            "status": "healthy",
+            "service": "backend"
+        })

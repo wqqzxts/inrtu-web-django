@@ -32,7 +32,7 @@ router.register("skills", SkillsViewset, basename="skills")
 router.register("content-types", ContentTypeViewset, basename="content-types")
 router.register("content", ContentViewset, basename="content")
 router.register("users", UserViewset, basename="users")
-router.register("healt", HealthViewset, basename="health")
+router.register("health", HealthViewset, basename="health")
 
 
 urlpatterns = [

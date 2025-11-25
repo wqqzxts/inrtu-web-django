@@ -31,5 +31,5 @@ spec:
             port: 8000
           initialDelaySeconds: 15
           periodSeconds: 5
-          timeoutSeconds: 5
+          timeoutSeconds: 1
           failureThreshold: 2
