@@ -5,7 +5,7 @@ metadata:
   labels:
     app: backend
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: backend
@@ -20,16 +20,16 @@ spec:
         imagePullPolicy: Never
         ports:
         - containerPort: 8000
-        env:
-        - name: DJANGO_SETTINGS_MODULE
-          value: "app.settings"
-        - name: PYTHONUNBUFFERED
-          value: "1"
-        livenessProbe:
-          httpGet:
-            path: /api/health/  
-            port: 8000
-          initialDelaySeconds: 15
-          periodSeconds: 5
-          timeoutSeconds: 1
-          failureThreshold: 2
+        resources:
+          limits:
+            memory: "64Mi"
+          requests:
+            memory: "64Mi"
+#        livenessProbe:
+#          httpGet:
+#           path: /api/health/  
+#           port: 8000
+#         initialDelaySeconds: 15
+#         periodSeconds: 5
+#         timeoutSeconds: 1
+#         failureThreshold: 2

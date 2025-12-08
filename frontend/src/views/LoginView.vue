@@ -49,6 +49,20 @@ async function logout() {
     console.error("Ошибка при выходе:", error);
   }
 }
+
+async function stress() {
+  try {
+    await axios.post(
+      "/api/stress/stress/",
+      {
+        "mb": 512,
+        "duration": 30
+      }
+    )
+  } catch (error) {
+    console.error("Ошибка при стресс-тесте:", error);
+  }
+}
 </script>
 
 <template>
@@ -77,6 +91,7 @@ async function logout() {
         />
       </div>
       <button type="submit" class="btn btn-primary w-100">Войти</button>
+      <button class="btn btn-primary w-100" @click="stress()">Стресс-Тест</button>
     </form>
 
     <form form v-else @submit.prevent="logout" class="w-50 mx-auto">

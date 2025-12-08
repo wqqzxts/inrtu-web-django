@@ -27,12 +27,10 @@ export default defineConfig({
         target: "http://localhost:8000"
       },
     },
-    // Add headers for proper MIME types
     headers: {
       'Content-Type': 'text/css'
     }
   },
-  // Ensure proper build configuration
   build: {
     assetsDir: 'assets',
     rollupOptions: {

@@ -15,7 +15,6 @@ spec:
       labels:
         app: cadvisor
     spec:
-      # Disable service account token mount
       automountServiceAccountToken: false
       tolerations:
       - key: node-role.kubernetes.io/master
