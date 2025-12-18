@@ -22,9 +22,9 @@ spec:
         - containerPort: 8000
         resources:
           limits:
-            memory: "64Mi"
+            memory: "50Mi"
           requests:
-            memory: "64Mi"
+            memory: "50"
 #        livenessProbe:
 #          httpGet:
 #           path: /api/health/  

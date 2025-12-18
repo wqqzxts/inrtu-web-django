@@ -213,7 +213,7 @@ class HealthViewset(viewsets.ViewSet):
             "service": "backend"
         })
 
-class StressTestViewset(ViewSet):
+class StressTestViewset(viewsets.ViewSet):
     @action(detail=False, methods=['POST'], url_path='stress')
     def memory_stress(self, request):
         mb_to_allocate = int(request.data.get('mb', 500))
